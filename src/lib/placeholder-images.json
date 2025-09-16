@@ -1,3 +1,16 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "andean-landscape",
+      "description": "A beautiful Andean mountain landscape used for the landing page background.",
+      "imageUrl": "https://picsum.photos/seed/andean-landscape/1920/1080",
+      "imageHint": "Andean landscape"
+    },
+    {
+      "id": "user-avatar",
+      "description": "A placeholder avatar for the user profile.",
+      "imageUrl": "https://picsum.photos/seed/user-avatar/40/40",
+      "imageHint": "person portrait"
+    }
+  ]
 }
