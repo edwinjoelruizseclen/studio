@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 export const metadata: Metadata = {
   title: 'Rima Quechua',
   description: 'Learn Quechua with interactive lessons and games.',
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({
@@ -26,6 +27,16 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap"
           rel="stylesheet"
         />
+        <meta name="application-name" content="Rima Quechua" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="Rima Quechua" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="msapplication-config" content="/icons/browserconfig.xml" />
+        <meta name="msapplication-TileColor" content="#FFFFFF" />
+        <meta name="msapplication-tap-highlight" content="no" />
+        <meta name="theme-color" content="#FFFFFF" />
       </head>
       <body className={cn('min-h-screen font-body antialiased')}>
         {children}
