@@ -28,7 +28,7 @@ export default function Home() {
         <div className="mb-6 flex items-center gap-4">
           <AndeanCrossIcon className="h-16 w-16 text-primary" />
           <h1 className="text-5xl font-bold text-foreground font-headline md:text-7xl">
-            Rima Quechua
+            Rimay App
           </h1>
         </div>
         <p className="mt-4 max-w-2xl text-lg text-muted-foreground font-body md:text-xl">

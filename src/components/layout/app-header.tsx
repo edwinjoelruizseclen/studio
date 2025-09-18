@@ -33,7 +33,7 @@ export default function AppHeader() {
       <div className="container flex h-16 items-center justify-between px-4 md:px-6">
         <Link href="/dashboard" className="flex items-center gap-2">
           <AndeanCrossIcon className="h-6 w-6 text-primary" />
-          <span className="font-headline text-lg font-bold">Rima Quechua</span>
+          <span className="font-headline text-lg font-bold">Rimay App</span>
         </Link>
         {user && (
           <DropdownMenu>

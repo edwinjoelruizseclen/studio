@@ -11,7 +11,7 @@ export default function AuthLayout({
       <div className="absolute top-4 left-4">
         <Link href="/" className="flex items-center gap-2 text-foreground">
           <AndeanCrossIcon className="h-6 w-6 text-primary" />
-          <span className="font-headline text-lg font-bold">Rima Quechua</span>
+          <span className="font-headline text-lg font-bold">Rimay App</span>
         </Link>
       </div>
       <div className="w-full max-w-md">{children}</div>
