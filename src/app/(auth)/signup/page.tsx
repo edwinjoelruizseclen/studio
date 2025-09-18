@@ -34,6 +34,7 @@ export default function SignupPage() {
       await signUp(email, password);
       router.push('/dashboard');
     } catch (error: any) {
+      console.error("Signup Error:", error);
       let description = 'Ocurrió un error. Por favor, inténtalo de nuevo.';
       if (error.code === 'auth/email-already-in-use') {
         description = 'Este correo electrónico ya está en uso.';

@@ -34,6 +34,7 @@ export default function LoginPage() {
       await signIn(email, password);
       router.push('/dashboard');
     } catch (error: any) {
+      console.error("Login Error:", error);
       toast({
         variant: 'destructive',
         title: 'Error al iniciar sesión',
