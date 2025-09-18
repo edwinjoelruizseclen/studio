@@ -1,3 +1,4 @@
+'use client';
 import Link from 'next/link';
 import { AndeanCrossIcon } from '@/components/icons/andean-cross';
 import {
@@ -14,9 +15,18 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useAuth } from '@/hooks/use-auth';
+import { useRouter } from 'next/navigation';
 
 export default function AppHeader() {
   const avatarImage = PlaceHolderImages.find((img) => img.id === 'user-avatar');
+  const { signOut, user } = useAuth();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.push('/login');
+  };
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-card">
@@ -25,28 +35,32 @@ export default function AppHeader() {
           <AndeanCrossIcon className="h-6 w-6 text-primary" />
           <span className="font-headline text-lg font-bold">Rima Quechua</span>
         </Link>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Avatar className="cursor-pointer">
-              {avatarImage && (
-                <AvatarImage
-                  src={avatarImage.imageUrl}
-                  alt={avatarImage.description}
-                  data-ai-hint={avatarImage.imageHint}
-                />
-              )}
-              <AvatarFallback>Q</AvatarFallback>
-            </Avatar>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Perfil</DropdownMenuItem>
-            <DropdownMenuItem>Ajustes</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Cerrar Sesión</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {user && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Avatar className="cursor-pointer">
+                {avatarImage && (
+                  <AvatarImage
+                    src={avatarImage.imageUrl}
+                    alt={avatarImage.description}
+                    data-ai-hint={avatarImage.imageHint}
+                  />
+                )}
+                <AvatarFallback>{user.email?.[0].toUpperCase() ?? 'Q'}</AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Perfil</DropdownMenuItem>
+              <DropdownMenuItem>Ajustes</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleSignOut}>
+                Cerrar Sesión
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
     </header>
   );

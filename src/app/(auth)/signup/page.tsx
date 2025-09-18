@@ -13,19 +13,41 @@ import { Label } from '@/components/ui/label';
 import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/use-auth';
+import { useToast } from '@/hooks/use-toast';
 
 export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const { signUp } = useAuth();
+  const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    // Here you would typically handle form submission, e.g., call an API.
-    setTimeout(() => {
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    try {
+      await signUp(email, password);
+      router.push('/dashboard');
+    } catch (error: any) {
+      let description = 'Ocurrió un error. Por favor, inténtalo de nuevo.';
+      if (error.code === 'auth/email-already-in-use') {
+        description = 'Este correo electrónico ya está en uso.';
+      } else if (error.code === 'auth/weak-password') {
+        description = 'La contraseña debe tener al menos 6 caracteres.';
+      }
+
+      toast({
+        variant: 'destructive',
+        title: 'Error al crear la cuenta',
+        description,
+      });
       setIsLoading(false);
-      console.log('Signup form submitted');
-      // In a real app, you might redirect to a confirmation page or dashboard
-    }, 1500);
+    }
   };
 
   return (
@@ -40,15 +62,21 @@ export default function SignupPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="name">Nombre</Label>
-            <Input id="name" type="text" placeholder="John Doe" required />
+            <Input id="name" name="name" type="text" placeholder="John Doe" required />
           </div>
           <div className="space-y-2">
             <Label htmlFor="email">Correo Electrónico</Label>
-            <Input id="email" type="email" placeholder="m@ejemplo.com" required />
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="m@ejemplo.com"
+              required
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Contraseña</Label>
-            <Input id="password" type="password" required />
+            <Input id="password" name="password" type="password" required />
           </div>
           <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

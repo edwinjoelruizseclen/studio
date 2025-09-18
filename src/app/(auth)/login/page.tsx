@@ -13,22 +13,37 @@ import { Label } from '@/components/ui/label';
 import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/use-auth';
+import { useToast } from '@/hooks/use-toast';
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const { signIn } = useAuth();
+  const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    // Here you would typically handle form submission, e.g., call an API.
-    // For demonstration, we'll just simulate a delay.
-    setTimeout(() => {
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    try {
+      await signIn(email, password);
+      router.push('/dashboard');
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        title: 'Error al iniciar sesión',
+        description:
+          error.code === 'auth/invalid-credential'
+            ? 'Credenciales incorrectas. Por favor, verifica tu correo y contraseña.'
+            : 'Ocurrió un error. Por favor, inténtalo de nuevo.',
+      });
       setIsLoading(false);
-      // On successful login, you would redirect the user.
-      // For now, we'll just log to the console.
-      console.log('Login form submitted');
-      // In a real app, you would use: router.push('/dashboard');
-    }, 1500);
+    }
   };
 
   return (
@@ -43,11 +58,17 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">Correo Electrónico</Label>
-            <Input id="email" type="email" placeholder="m@ejemplo.com" required />
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="m@ejemplo.com"
+              required
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Contraseña</Label>
-            <Input id="password" type="password" required />
+            <Input id="password" name="password" type="password" required />
           </div>
           <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
