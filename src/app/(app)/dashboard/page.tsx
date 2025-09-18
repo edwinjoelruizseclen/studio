@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
 
 const initialLessons = [
   { id: 1, title: 'Lección 1: Saludos y Presentaciones', progress: 0 },
@@ -114,8 +115,8 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-3">
-        <div className="lg:col-span-2">
+      <div className="grid gap-8">
+        <div>
           <h2 className="mb-4 font-headline text-2xl font-bold">Lecciones Actuales</h2>
           <div className="space-y-4">
             {lessons.map((lesson) => (
@@ -150,7 +151,7 @@ export default function DashboardPage() {
               </Card>
             ))}
              <Link href="/lessons">
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="mt-4 w-full">
                 Ver Todas las Lecciones
               </Button>
             </Link>

@@ -9,12 +9,12 @@ import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
 
 const wordPairs = [
-  { quechua: 'Wasi', english: 'House' },
-  { quechua: 'Allqu', english: 'Dog' },
-  { quechua: 'Misi', english: 'Cat' },
-  { quechua: 'Yaku', english: 'Water' },
-  { quechua: 'Inti', english: 'Sun' },
-  { quechua: 'Killa', english: 'Moon' },
+  { quechua: 'Wasi', english: 'Casa' },
+  { quechua: 'Allqu', english: 'Perro' },
+  { quechua: 'Misi', english: 'Gato' },
+  { quechua: 'Yaku', english: 'Agua' },
+  { quechua: 'Inti', english: 'Sol' },
+  { quechua: 'Killa', english: 'Luna' },
 ];
 
 type Word = { type: 'quechua' | 'english'; text: string };
@@ -107,7 +107,7 @@ export default function WordMatchingGame() {
           Emparejar Palabras
         </h1>
         <p className="mb-4 text-center text-muted-foreground">
-          Une la palabra en quechua con su traducción en inglés.
+          Une la palabra en quechua con su traducción en español.
         </p>
         <Progress value={progress} className="mb-6 h-2" />
       </div>
