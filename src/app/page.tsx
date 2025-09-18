@@ -36,7 +36,7 @@ export default function Home() {
           Interactive lessons, engaging games, and authentic pronunciation
           practice.
         </p>
-        <Link href="/dashboard" className="mt-10">
+        <Link href="/login" className="mt-10">
           <Button
             size="lg"
             className="transform text-lg font-bold text-accent-foreground shadow-lg transition-transform hover:scale-105 hover:bg-accent/90 bg-accent"
