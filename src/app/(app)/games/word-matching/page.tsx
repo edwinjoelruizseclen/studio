@@ -1,3 +1,4 @@
+
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 import { Card } from '@/components/ui/card';
@@ -43,9 +44,19 @@ export default function WordMatchingGame() {
     shuffleWords();
   }, [shuffleWords]);
 
+  const isFinished = matched.length === wordPairs.length * 2;
+
   useEffect(() => {
     setProgress((matched.length / (wordPairs.length * 2)) * 100);
-  }, [matched]);
+    if (isFinished) {
+      // Update lesson progress in localStorage when game is won
+      const savedProgress = localStorage.getItem('lessonProgress');
+      const currentProgress = savedProgress ? JSON.parse(savedProgress) : {};
+      // This game is related to Lesson 2: Common Phrases
+      currentProgress[2] = 100;
+      localStorage.setItem('lessonProgress', JSON.stringify(currentProgress));
+    }
+  }, [matched, isFinished]);
 
   useEffect(() => {
     if (selected.length === 2) {
@@ -82,8 +93,6 @@ export default function WordMatchingGame() {
     }
   };
 
-  const isFinished = matched.length === wordPairs.length * 2;
-
   return (
     <div className="container mx-auto flex flex-col items-center p-4 md:p-6 lg:p-8">
       <div className="w-full max-w-2xl">
@@ -108,7 +117,7 @@ export default function WordMatchingGame() {
           <CheckCircle className="mx-auto mb-4 h-16 w-16 text-primary" />
           <h2 className="text-2xl font-bold">Congratulations!</h2>
           <p className="mt-2 mb-6 text-muted-foreground">
-            You've matched all the words.
+            You've matched all the words and completed a lesson!
           </p>
           <Button onClick={shuffleWords}>
             <Shuffle className="mr-2 h-4 w-4" />

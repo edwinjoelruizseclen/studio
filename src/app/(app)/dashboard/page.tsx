@@ -1,3 +1,5 @@
+
+'use client';
 import Link from 'next/link';
 import {
   Card,
@@ -13,6 +15,7 @@ import {
   MessageSquareQuote,
   ArrowRight,
 } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 const mainFeatures = [
   {
@@ -41,13 +44,36 @@ const mainFeatures = [
   },
 ];
 
-const lessons = [
-  { id: 1, title: 'Lesson 1: Greetings & Introductions', progress: 100 },
-  { id: 2, title: 'Lesson 2: Common Phrases', progress: 60 },
+const initialLessons = [
+  { id: 1, title: 'Lesson 1: Greetings & Introductions', progress: 0 },
+  { id: 2, title: 'Lesson 2: Common Phrases', progress: 0 },
   { id: 3, title: 'Lesson 3: Numbers & Colors', progress: 0 },
 ];
 
 export default function DashboardPage() {
+  const [lessons, setLessons] = useState(initialLessons);
+
+  useEffect(() => {
+    const savedProgress = localStorage.getItem('lessonProgress');
+    if (savedProgress) {
+      const progress = JSON.parse(savedProgress);
+      const updatedLessons = initialLessons.map((lesson) => ({
+        ...lesson,
+        progress: progress[lesson.id] || lesson.progress,
+      }));
+      setLessons(updatedLessons);
+    } else {
+       // On first load, set some default progress for demonstration
+      const defaultProgress = { 1: 100, 2: 60 };
+      localStorage.setItem('lessonProgress', JSON.stringify(defaultProgress));
+      const updatedLessons = initialLessons.map((lesson) => ({
+        ...lesson,
+        progress: defaultProgress[lesson.id] || lesson.progress,
+      }));
+      setLessons(updatedLessons);
+    }
+  }, []);
+
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
       <div className="mb-8">
@@ -79,7 +105,7 @@ export default function DashboardPage() {
 
       <h2 className="mb-4 font-headline text-2xl font-bold">Current Lessons</h2>
       <div className="space-y-4">
-        {lessons.map((lesson) => (
+        {lessons.slice(0, 3).map((lesson) => (
           <Card
             key={lesson.id}
             className="transform transition-transform hover:-translate-y-1"

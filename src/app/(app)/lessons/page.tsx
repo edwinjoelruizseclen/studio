@@ -1,22 +1,25 @@
+
+'use client';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { ArrowRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
-const lessonCategories = [
+const lessonCategoriesData = [
   {
     category: 'Beginner Module',
     lessons: [
       {
         id: 1,
         title: 'Greetings & Introductions',
-        progress: 100,
+        progress: 0,
         description: 'Learn to say hello and introduce yourself.',
       },
       {
         id: 2,
         title: 'Common Phrases',
-        progress: 60,
+        progress: 0,
         description: 'Essential phrases for everyday conversation.',
       },
       {
@@ -53,6 +56,23 @@ const lessonCategories = [
 ];
 
 export default function LessonsPage() {
+  const [lessonCategories, setLessonCategories] = useState(lessonCategoriesData);
+
+  useEffect(() => {
+    const savedProgress = localStorage.getItem('lessonProgress');
+    if (savedProgress) {
+      const progress = JSON.parse(savedProgress);
+      const updatedCategories = lessonCategoriesData.map((category) => ({
+        ...category,
+        lessons: category.lessons.map((lesson) => ({
+          ...lesson,
+          progress: progress[lesson.id] || lesson.progress,
+        })),
+      }));
+      setLessonCategories(updatedCategories);
+    }
+  }, []);
+
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
       <h1 className="mb-6 font-headline text-3xl font-bold">All Lessons</h1>
