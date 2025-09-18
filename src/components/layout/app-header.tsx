@@ -18,15 +18,16 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { useAuth } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
 import { SidebarTrigger } from '../ui/sidebar';
+import { Button } from '../ui/button';
 
 export default function AppHeader() {
   const avatarImage = PlaceHolderImages.find((img) => img.id === 'user-avatar');
-  const { signOut, user } = useAuth();
+  const { signOut, user, isAnonymous } = useAuth();
   const router = useRouter();
 
   const handleSignOut = async () => {
     await signOut();
-    router.push('/login');
+    router.push('/');
   };
 
   return (
@@ -39,7 +40,7 @@ export default function AppHeader() {
               <span className="hidden font-headline text-lg font-bold md:block">Rimay App</span>
             </Link>
         </div>
-        {user && (
+        {user && !isAnonymous && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Avatar className="cursor-pointer">
@@ -64,6 +65,16 @@ export default function AppHeader() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+        )}
+        {isAnonymous && (
+            <div className="flex items-center gap-2">
+                 <Button variant="ghost" asChild>
+                    <Link href="/login">Iniciar Sesión</Link>
+                </Button>
+                <Button asChild>
+                     <Link href="/signup">Crear Cuenta</Link>
+                </Button>
+            </div>
         )}
       </div>
     </header>

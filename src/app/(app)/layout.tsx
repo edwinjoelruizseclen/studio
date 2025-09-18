@@ -47,7 +47,7 @@ export default function AppLayout({
 
   useEffect(() => {
     if (!loading && !user) {
-      router.replace(`/login?redirect=${pathname}`);
+      router.replace(`/`);
     }
   }, [user, loading, router, pathname]);
   
@@ -55,16 +55,12 @@ export default function AppLayout({
     setOpen(!isMobile);
   }, [isMobile]);
 
-  if (loading) {
+  if (loading || !user) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
-  }
-
-  if (!user) {
-    return null; // or a redirect component
   }
   
   return (

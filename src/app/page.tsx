@@ -1,14 +1,40 @@
+'use client';
+
 import Image from 'next/image';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Loader2 } from 'lucide-react';
 import { AndeanCrossIcon } from '@/components/icons/andean-cross';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useAuth } from '@/hooks/use-auth';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useToast } from '@/hooks/use-toast';
 
 export default function Home() {
   const bgImage = PlaceHolderImages.find(
     (img) => img.id === 'andean-landscape'
   );
+  const { signInAnonymously } = useAuth();
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
+
+  const handleStart = async () => {
+    setIsLoading(true);
+    try {
+      await signInAnonymously();
+      router.push('/dashboard');
+    } catch (error) {
+      console.error('Anonymous sign-in error:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'No se pudo iniciar la sesión. Por favor, inténtalo de nuevo.',
+      });
+      setIsLoading(false);
+    }
+  };
+
 
   return (
     <div className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-background">
@@ -27,7 +53,7 @@ export default function Home() {
       <main className="z-20 flex flex-col items-center justify-center p-8 text-center">
         <div className="mb-6 flex items-center gap-4">
           <AndeanCrossIcon className="h-16 w-16 text-primary" />
-          <h1 className="text-5xl font-bold text-foreground font-headline md:text-7xl">
+          <h1 className="font-headline text-5xl font-bold text-foreground md:text-7xl">
             Rimay App
           </h1>
         </div>
@@ -35,15 +61,21 @@ export default function Home() {
           Tu viaje para dominar el idioma de los Incas comienza aquí.
           Lecciones interactivas, juegos atractivos y práctica de pronunciación auténtica.
         </p>
-        <Link href="/login" className="mt-10">
           <Button
             size="lg"
-            className="transform text-lg font-bold text-accent-foreground shadow-lg transition-transform hover:scale-105 hover:bg-accent/90 bg-accent"
+            className="transform text-lg font-bold text-accent-foreground shadow-lg transition-transform hover:scale-105 hover:bg-accent/90 bg-accent mt-10"
+            onClick={handleStart}
+            disabled={isLoading}
           >
-            Empezar
-            <ArrowRight className="ml-2 h-5 w-5" />
+            {isLoading ? (
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+            ) : (
+              <>
+                Empezar
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </>
+            )}
           </Button>
-        </Link>
       </main>
     </div>
   );

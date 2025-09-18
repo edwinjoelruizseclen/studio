@@ -12,6 +12,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut as firebaseSignOut,
+  signInAnonymously as firebaseSignInAnonymously,
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useToast } from './use-toast';
@@ -19,8 +20,10 @@ import { useToast } from './use-toast';
 interface AuthContextType {
   user: User | null;
   loading: boolean;
+  isAnonymous: boolean;
   signUp: (email: string, pass: string) => Promise<any>;
   signIn: (email: string, pass: string) => Promise<any>;
+  signInAnonymously: () => Promise<any>;
   signOut: () => Promise<void>;
 }
 
@@ -47,6 +50,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signIn = (email: string, password: string) => {
     return signInWithEmailAndPassword(auth, email, password);
   };
+  
+  const signInAnonymously = () => {
+    return firebaseSignInAnonymously(auth);
+  };
 
   const signOut = async () => {
     try {
@@ -63,8 +70,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const value = {
     user,
     loading,
+    isAnonymous: user?.isAnonymous ?? false,
     signUp,
     signIn,
+    signInAnonymously,
     signOut,
   };
 
