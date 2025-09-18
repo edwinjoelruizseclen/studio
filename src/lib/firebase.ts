@@ -3,14 +3,8 @@ import { getAuth } from 'firebase/auth';
 import { firebaseConfig } from './firebase-config';
 
 // Initialize Firebase
-const firebaseApp = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
-const auth = getAuth(firebaseApp, {
-  persistence: undefined,
-  initializeWithValue: {
-    authDomain: firebaseConfig.authDomain,
-  }
-});
+const auth = getAuth(app);
 
-
-export { auth, firebaseApp };
+export { auth, app as firebaseApp };
