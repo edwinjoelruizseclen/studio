@@ -1,6 +1,5 @@
 
 'use client';
-import Link from 'next/link';
 import {
   Card,
   CardContent,
@@ -10,39 +9,13 @@ import {
 import { Progress } from '@/components/ui/progress';
 import {
   BookOpen,
-  Gamepad2,
-  Mic,
-  MessageSquareQuote,
   ArrowRight,
+  Flame,
+  CheckCircle,
+  BarChart,
 } from 'lucide-react';
+import Link from 'next/link';
 import { useState, useEffect } from 'react';
-
-const mainFeatures = [
-  {
-    title: 'Lecciones',
-    description: 'Gramática y vocabulario paso a paso.',
-    href: '/lessons',
-    icon: BookOpen,
-  },
-  {
-    title: 'Juegos',
-    description: 'Practica con juegos divertidos.',
-    href: '/games',
-    icon: Gamepad2,
-  },
-  {
-    title: 'Práctica',
-    description: 'Mejora tu pronunciación.',
-    href: '/pronunciation',
-    icon: Mic,
-  },
-  {
-    title: 'Traductor IA',
-    description: 'Traducciones según el dialecto.',
-    href: '/translate',
-    icon: MessageSquareQuote,
-  },
-];
 
 const initialLessons = [
   { id: 1, title: 'Lección 1: Saludos y Presentaciones', progress: 0 },
@@ -52,27 +25,46 @@ const initialLessons = [
 
 export default function DashboardPage() {
   const [lessons, setLessons] = useState(initialLessons);
+  const [lessonsCompleted, setLessonsCompleted] = useState(0);
 
   useEffect(() => {
     const savedProgress = localStorage.getItem('lessonProgress');
     if (savedProgress) {
       const progress = JSON.parse(savedProgress);
-      const updatedLessons = initialLessons.map((lesson) => ({
-        ...lesson,
-        progress: progress[lesson.id] || lesson.progress,
-      }));
+      let completedCount = 0;
+      const updatedLessons = initialLessons.map((lesson) => {
+        const p = progress[lesson.id] || lesson.progress;
+        if (p === 100) {
+          completedCount++;
+        }
+        return {
+          ...lesson,
+          progress: p,
+        };
+      });
       setLessons(updatedLessons);
+      setLessonsCompleted(completedCount);
     } else {
-       // On first load, set some default progress for demonstration
+      // On first load, set some default progress for demonstration
       const defaultProgress = { 1: 100, 2: 60 };
       localStorage.setItem('lessonProgress', JSON.stringify(defaultProgress));
-      const updatedLessons = initialLessons.map((lesson) => ({
-        ...lesson,
-        progress: defaultProgress[lesson.id] || lesson.progress,
-      }));
+      let completedCount = 0;
+      const updatedLessons = initialLessons.map((lesson) => {
+         const p = defaultProgress[lesson.id] || lesson.progress;
+        if (p === 100) {
+          completedCount++;
+        }
+        return {
+          ...lesson,
+          progress: p,
+        };
+      });
       setLessons(updatedLessons);
+      setLessonsCompleted(completedCount);
     }
   }, []);
+
+  const totalProgress = lessons.reduce((sum, l) => sum + l.progress, 0) / lessons.length;
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
@@ -83,54 +75,87 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      <div className="mb-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {mainFeatures.map((feature) => (
-          <Link key={feature.title} href={feature.href} className="block">
-            <Card className="h-full transition-all hover:shadow-lg hover:bg-card/90">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-base font-semibold">
-                  {feature.title}
-                </CardTitle>
-                <feature.icon className="h-5 w-5 text-primary" />
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  {feature.description}
-                </p>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
+      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">Progreso Total</CardTitle>
+            <BarChart className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{Math.round(totalProgress)}%</div>
+            <p className="text-xs text-muted-foreground">
+              Completado de todas las lecciones
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">Racha</CardTitle>
+            <Flame className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">5 Días</div>
+            <p className="text-xs text-muted-foreground">
+              ¡Sigue así para no perder tu racha!
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">Lecciones Completadas</CardTitle>
+            <CheckCircle className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">+{lessonsCompleted}</div>
+            <p className="text-xs text-muted-foreground">
+              Has dominado {lessonsCompleted} de {lessons.length} lecciones
+            </p>
+          </CardContent>
+        </Card>
       </div>
 
-      <h2 className="mb-4 font-headline text-2xl font-bold">Lecciones Actuales</h2>
-      <div className="space-y-4">
-        {lessons.slice(0, 3).map((lesson) => (
-          <Card
-            key={lesson.id}
-            className="transform transition-transform hover:-translate-y-1"
-          >
-            <Link href={`/lessons/${lesson.id}`} className="block">
-              <CardContent className="flex items-center justify-between p-4">
-                <div>
-                  <h3 className="font-semibold">{lesson.title}</h3>
-                  <div className="mt-2 flex items-center gap-3">
-                    <Progress
-                      value={lesson.progress}
-                      className="h-2 w-40 md:w-56"
-                    />
-                    <span className="text-sm font-medium text-muted-foreground">
-                      {lesson.progress}%
-                    </span>
-                  </div>
-                </div>
-                <div className="rounded-md p-2 hover:bg-accent/50">
-                  <ArrowRight className="h-5 w-5 text-muted-foreground" />
-                </div>
-              </CardContent>
+      <div className="grid gap-8 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <h2 className="mb-4 font-headline text-2xl font-bold">Lecciones Actuales</h2>
+          <div className="space-y-4">
+            {lessons.map((lesson) => (
+              <Card
+                key={lesson.id}
+                className="transform transition-transform hover:-translate-y-1"
+              >
+                <Link href={`/lessons/${lesson.id}`} className="block">
+                  <CardContent className="flex items-center justify-between p-4">
+                    <div className="flex items-center gap-4">
+                       <div className="rounded-full bg-primary/10 p-3">
+                        <BookOpen className="h-6 w-6 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold">{lesson.title}</h3>
+                        <div className="mt-1 flex items-center gap-3">
+                          <Progress
+                            value={lesson.progress}
+                            className="h-2 w-32 md:w-40"
+                          />
+                          <span className="text-sm font-medium text-muted-foreground">
+                            {lesson.progress}%
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="rounded-md p-2 hover:bg-accent/50">
+                      <ArrowRight className="h-5 w-5 text-muted-foreground" />
+                    </div>
+                  </CardContent>
+                </Link>
+              </Card>
+            ))}
+             <Link href="/lessons">
+              <Button variant="outline" className="w-full">
+                Ver Todas las Lecciones
+              </Button>
             </Link>
-          </Card>
-        ))}
+          </div>
+        </div>
       </div>
     </div>
   );
