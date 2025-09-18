@@ -25,9 +25,6 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { AndeanCrossIcon } from '@/components/icons/andean-cross';
 
 const navItems = [
   { href: '/dashboard', label: 'Aprender', icon: Home },

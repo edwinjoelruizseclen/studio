@@ -13,13 +13,14 @@ import { Label } from '@/components/ui/label';
 import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { signIn } = useAuth();
   const { toast } = useToast();
 
@@ -29,10 +30,11 @@ export default function LoginPage() {
     const formData = new FormData(e.currentTarget);
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
+    const redirect = searchParams.get('redirect');
 
     try {
       await signIn(email, password);
-      router.push('/dashboard');
+      router.push(redirect || '/dashboard');
     } catch (error: any) {
       console.error("Login Error:", error);
       toast({
