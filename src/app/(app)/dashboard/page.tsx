@@ -13,10 +13,13 @@ import {
   Flame,
   CheckCircle,
   BarChart,
+  Loader2,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/hooks/use-auth';
+import { getUserProgress, LessonProgress } from '@/lib/user-progress';
 
 const initialLessons = [
   { id: 1, title: 'Lección 1: Saludos y Presentaciones', progress: 0 },
@@ -27,45 +30,52 @@ const initialLessons = [
 export default function DashboardPage() {
   const [lessons, setLessons] = useState(initialLessons);
   const [lessonsCompleted, setLessonsCompleted] = useState(0);
+  const [totalProgress, setTotalProgress] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const { user } = useAuth();
 
   useEffect(() => {
-    const savedProgress = localStorage.getItem('lessonProgress');
-    if (savedProgress) {
-      const progress = JSON.parse(savedProgress);
-      let completedCount = 0;
-      const updatedLessons = initialLessons.map((lesson) => {
-        const p = progress[lesson.id] || lesson.progress;
-        if (p === 100) {
-          completedCount++;
-        }
-        return {
-          ...lesson,
-          progress: p,
-        };
-      });
-      setLessons(updatedLessons);
-      setLessonsCompleted(completedCount);
-    } else {
-      // On first load, set some default progress for demonstration
-      const defaultProgress = { 1: 100, 2: 60 };
-      localStorage.setItem('lessonProgress', JSON.stringify(defaultProgress));
-      let completedCount = 0;
-      const updatedLessons = initialLessons.map((lesson) => {
-         const p = defaultProgress[lesson.id] || lesson.progress;
-        if (p === 100) {
-          completedCount++;
-        }
-        return {
-          ...lesson,
-          progress: p,
-        };
-      });
-      setLessons(updatedLessons);
-      setLessonsCompleted(completedCount);
-    }
-  }, []);
+    async function loadProgress() {
+      if (!user) return;
+      setIsLoading(true);
 
-  const totalProgress = lessons.reduce((sum, l) => sum + l.progress, 0) / lessons.length;
+      try {
+        const progressData = await getUserProgress(user.uid);
+        
+        let completedCount = 0;
+        const updatedLessons = initialLessons.map((lesson) => {
+          const p = progressData[lesson.id] || lesson.progress;
+          if (p === 100) {
+            completedCount++;
+          }
+          return {
+            ...lesson,
+            progress: p,
+          };
+        });
+        
+        setLessons(updatedLessons);
+        setLessonsCompleted(completedCount);
+        const overallProgress = updatedLessons.reduce((sum, l) => sum + l.progress, 0) / updatedLessons.length;
+        setTotalProgress(overallProgress);
+
+      } catch (error) {
+        console.error("Error fetching user progress:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadProgress();
+  }, [user]);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">

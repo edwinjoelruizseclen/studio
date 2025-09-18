@@ -7,6 +7,9 @@ import { ArrowLeft, CheckCircle, Shuffle } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
+import { useAuth } from '@/hooks/use-auth';
+import { updateUserProgress } from '@/lib/user-progress';
+import { useToast } from '@/hooks/use-toast';
 
 const wordPairs = [
   { quechua: 'Wasi', english: 'Casa' },
@@ -25,6 +28,8 @@ export default function WordMatchingGame() {
   const [matched, setMatched] = useState<string[]>([]);
   const [attempted, setAttempted] = useState<Word[]>([]);
   const [progress, setProgress] = useState(0);
+  const { user, isAnonymous } = useAuth();
+  const { toast } = useToast();
 
   const shuffleWords = useCallback(() => {
     const quechuaWords = wordPairs.map(
@@ -48,15 +53,44 @@ export default function WordMatchingGame() {
 
   useEffect(() => {
     setProgress((matched.length / (wordPairs.length * 2)) * 100);
-    if (isFinished) {
-      // Update lesson progress in localStorage when game is won
-      const savedProgress = localStorage.getItem('lessonProgress');
-      const currentProgress = savedProgress ? JSON.parse(savedProgress) : {};
-      // This game is related to Lesson 2: Common Phrases
-      currentProgress[2] = 100;
-      localStorage.setItem('lessonProgress', JSON.stringify(currentProgress));
+    
+    async function handleGameFinish() {
+      if (isFinished) {
+        if (user) {
+          try {
+            await updateUserProgress(user.uid, 2, 100);
+            if (!isAnonymous) {
+              toast({
+                title: '¡Lección completada!',
+                description: 'Tu progreso ha sido guardado.',
+              });
+            }
+          } catch (error) {
+            console.error('Failed to update progress', error);
+            toast({
+              variant: 'destructive',
+              title: 'Error',
+              description: 'No se pudo guardar tu progreso.',
+            });
+          }
+        }
+        // Fallback to localStorage for anonymous users
+        if (isAnonymous) {
+          const savedProgress = localStorage.getItem('lessonProgress');
+          const currentProgress = savedProgress ? JSON.parse(savedProgress) : {};
+          currentProgress[2] = 100;
+          localStorage.setItem('lessonProgress', JSON.stringify(currentProgress));
+           toast({
+              title: '¡Lección completada!',
+              description: 'Crea una cuenta para guardar tu progreso.',
+            });
+        }
+      }
     }
-  }, [matched, isFinished]);
+    
+    handleGameFinish();
+
+  }, [matched, isFinished, user, toast, isAnonymous]);
 
   useEffect(() => {
     if (selected.length === 2) {

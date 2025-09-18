@@ -3,8 +3,10 @@
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { useAuth } from '@/hooks/use-auth';
+import { getUserProgress } from '@/lib/user-progress';
 
 const lessonCategoriesData = [
   {
@@ -57,21 +59,44 @@ const lessonCategoriesData = [
 
 export default function LessonsPage() {
   const [lessonCategories, setLessonCategories] = useState(lessonCategoriesData);
+  const [isLoading, setIsLoading] = useState(true);
+  const { user } = useAuth();
 
   useEffect(() => {
-    const savedProgress = localStorage.getItem('lessonProgress');
-    if (savedProgress) {
-      const progress = JSON.parse(savedProgress);
-      const updatedCategories = lessonCategoriesData.map((category) => ({
-        ...category,
-        lessons: category.lessons.map((lesson) => ({
-          ...lesson,
-          progress: progress[lesson.id] || lesson.progress,
-        })),
-      }));
-      setLessonCategories(updatedCategories);
+    async function loadProgress() {
+      if (!user) {
+        setIsLoading(false);
+        return;
+      }
+      setIsLoading(true);
+
+      try {
+        const progress = await getUserProgress(user.uid);
+        const updatedCategories = lessonCategoriesData.map((category) => ({
+          ...category,
+          lessons: category.lessons.map((lesson) => ({
+            ...lesson,
+            progress: progress[lesson.id] || lesson.progress,
+          })),
+        }));
+        setLessonCategories(updatedCategories);
+      } catch (error) {
+        console.error("Failed to load lesson progress:", error);
+      } finally {
+        setIsLoading(false);
+      }
     }
-  }, []);
+
+    loadProgress();
+  }, [user]);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
