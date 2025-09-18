@@ -19,18 +19,18 @@ export default function LessonDetailPage({ params }: { params: { id: string } })
         className="mb-4 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" />
-        Back to Lessons
+        Volver a Lecciones
       </Link>
       <h1 className="mb-2 font-headline text-3xl font-bold">
-        Lesson {params.id}: Greetings & Introductions
+        Lección {params.id}: Saludos y Presentaciones
       </h1>
       <p className="mb-8 text-muted-foreground">
-        Learn the basics of saying hello and introducing yourself in Quechua.
+        Aprende lo básico para saludar y presentarte en quechua.
       </p>
 
       <Card>
         <CardHeader>
-          <CardTitle>Vocabulary</CardTitle>
+          <CardTitle>Vocabulario</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -54,10 +54,10 @@ export default function LessonDetailPage({ params }: { params: { id: string } })
 
       <div className="mt-8 flex justify-between">
         <Button variant="outline">
-          <ArrowLeft className="mr-2 h-4 w-4" /> Previous Lesson
+          <ArrowLeft className="mr-2 h-4 w-4" /> Lección Anterior
         </Button>
         <Button>
-          Next Lesson <ArrowRight className="ml-2 h-4 w-4" />
+          Siguiente Lección <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </div>
     </div>

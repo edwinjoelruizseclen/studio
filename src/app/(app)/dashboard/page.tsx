@@ -19,35 +19,35 @@ import { useState, useEffect } from 'react';
 
 const mainFeatures = [
   {
-    title: 'Lessons',
-    description: 'Step-by-step grammar and vocabulary.',
+    title: 'Lecciones',
+    description: 'Gramática y vocabulario paso a paso.',
     href: '/lessons',
     icon: BookOpen,
   },
   {
-    title: 'Games',
-    description: 'Practice with fun, engaging games.',
+    title: 'Juegos',
+    description: 'Practica con juegos divertidos.',
     href: '/games',
     icon: Gamepad2,
   },
   {
-    title: 'Practice',
-    description: 'Improve your pronunciation.',
+    title: 'Práctica',
+    description: 'Mejora tu pronunciación.',
     href: '/pronunciation',
     icon: Mic,
   },
   {
-    title: 'AI Translator',
-    description: 'Get dialect-aware translations.',
+    title: 'Traductor IA',
+    description: 'Traducciones según el dialecto.',
     href: '/translate',
     icon: MessageSquareQuote,
   },
 ];
 
 const initialLessons = [
-  { id: 1, title: 'Lesson 1: Greetings & Introductions', progress: 0 },
-  { id: 2, title: 'Lesson 2: Common Phrases', progress: 0 },
-  { id: 3, title: 'Lesson 3: Numbers & Colors', progress: 0 },
+  { id: 1, title: 'Lección 1: Saludos y Presentaciones', progress: 0 },
+  { id: 2, title: 'Lección 2: Frases Comunes', progress: 0 },
+  { id: 3, title: 'Lección 3: Números y Colores', progress: 0 },
 ];
 
 export default function DashboardPage() {
@@ -77,9 +77,9 @@ export default function DashboardPage() {
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
       <div className="mb-8">
-        <h1 className="font-headline text-3xl font-bold">Your Learning Path</h1>
+        <h1 className="font-headline text-3xl font-bold">Tu Ruta de Aprendizaje</h1>
         <p className="text-muted-foreground">
-          Continue your journey to master Quechua.
+          Continúa tu viaje para dominar el quechua.
         </p>
       </div>
 
@@ -103,7 +103,7 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      <h2 className="mb-4 font-headline text-2xl font-bold">Current Lessons</h2>
+      <h2 className="mb-4 font-headline text-2xl font-bold">Lecciones Actuales</h2>
       <div className="space-y-4">
         {lessons.slice(0, 3).map((lesson) => (
           <Card

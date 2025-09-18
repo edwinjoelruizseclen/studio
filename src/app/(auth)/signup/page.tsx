@@ -31,39 +31,39 @@ export default function SignupPage() {
   return (
     <Card>
       <CardHeader className="text-center">
-        <CardTitle>Create an Account</CardTitle>
+        <CardTitle>Crear una Cuenta</CardTitle>
         <CardDescription>
-          Start your Quechua learning journey today.
+          Comienza tu viaje de aprendizaje de quechua hoy.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="name">Nombre</Label>
             <Input id="name" type="text" placeholder="John Doe" required />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="m@example.com" required />
+            <Label htmlFor="email">Correo Electrónico</Label>
+            <Input id="email" type="email" placeholder="m@ejemplo.com" required />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">Contraseña</Label>
             <Input id="password" type="password" required />
           </div>
           <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Create Account
+            Crear Cuenta
           </Button>
         </form>
       </CardContent>
       <CardFooter className="flex-col">
         <p className="text-sm text-muted-foreground">
-          Already have an account?{' '}
+          ¿Ya tienes una cuenta?{' '}
           <Link
             href="/login"
             className="font-semibold text-primary underline-offset-4 hover:underline"
           >
-            Sign In
+            Inicia Sesión
           </Link>
         </p>
       </CardFooter>

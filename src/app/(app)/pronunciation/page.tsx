@@ -26,18 +26,18 @@ function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
           <Button
             variant="outline"
             size="icon"
-            aria-label="Listen to native pronunciation"
+            aria-label="Escuchar pronunciación nativa"
           >
             <Volume2 className="h-5 w-5" />
           </Button>
           <Button
             variant={isRecording ? 'destructive' : 'secondary'}
             size="icon"
-            aria-label={isRecording ? 'Stop recording' : 'Start recording'}
+            aria-label={isRecording ? 'Detener grabación' : 'Empezar a grabar'}
           >
             <Mic className="h-5 w-5" />
           </Button>
-          <Button variant="outline" size="icon" disabled aria-label="Play your recording">
+          <Button variant="outline" size="icon" disabled aria-label="Reproducir tu grabación">
             {isPlaying ? (
               <Pause className="h-5 w-5" />
             ) : (
@@ -55,11 +55,11 @@ export default function PronunciationPage() {
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
       <div className="mx-auto mb-8 max-w-2xl text-center">
         <h1 className="font-headline text-3xl font-bold">
-          Pronunciation Practice
+          Práctica de Pronunciación
         </h1>
         <p className="text-muted-foreground">
-          Listen to native speakers, record yourself, and compare to perfect
-          your accent.
+          Escucha a hablantes nativos, grábate y compara para perfeccionar
+          tu acento.
         </p>
       </div>
 

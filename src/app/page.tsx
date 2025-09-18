@@ -32,16 +32,15 @@ export default function Home() {
           </h1>
         </div>
         <p className="mt-4 max-w-2xl text-lg text-muted-foreground font-body md:text-xl">
-          Your journey to mastering the language of the Incas begins here.
-          Interactive lessons, engaging games, and authentic pronunciation
-          practice.
+          Tu viaje para dominar el idioma de los Incas comienza aquí.
+          Lecciones interactivas, juegos atractivos y práctica de pronunciación auténtica.
         </p>
         <Link href="/login" className="mt-10">
           <Button
             size="lg"
             className="transform text-lg font-bold text-accent-foreground shadow-lg transition-transform hover:scale-105 hover:bg-accent/90 bg-accent"
           >
-            Get Started
+            Empezar
             <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
         </Link>

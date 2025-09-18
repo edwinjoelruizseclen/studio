@@ -30,12 +30,12 @@ function SubmitButton() {
       {pending ? (
         <>
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          Analyzing...
+          Analizando...
         </>
       ) : (
         <>
           <Sparkles className="mr-2 h-4 w-4" />
-          Get Definition
+          Obtener Definición
         </>
       )}
     </Button>
@@ -50,7 +50,7 @@ export function TranslateClient() {
   const { toast } = useToast();
 
   useEffect(() => {
-    if (state.message && state.message !== 'Success!') {
+    if (state.message && state.message !== '¡Éxito!') {
       toast({
         variant: 'destructive',
         title: 'Error',
@@ -63,16 +63,16 @@ export function TranslateClient() {
     <div className="mx-auto grid max-w-4xl gap-8 md:grid-cols-2">
       <Card>
         <CardHeader>
-          <CardTitle>Analyze Quechua Text</CardTitle>
+          <CardTitle>Analizar Texto en Quechua</CardTitle>
         </CardHeader>
         <CardContent>
           <form action={formAction} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="sentence">Quechua Sentence</Label>
+              <Label htmlFor="sentence">Oración en Quechua</Label>
               <Textarea
                 id="sentence"
                 name="sentence"
-                placeholder="E.g., Payqa wasi-n-pi-mikhun."
+                placeholder="Ej., Payqa wasi-n-pi-mikhun."
                 rows={4}
                 required
               />
@@ -83,11 +83,11 @@ export function TranslateClient() {
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="wordOrPhrase">Word or Phrase to Define</Label>
+              <Label htmlFor="wordOrPhrase">Palabra o Frase a Definir</Label>
               <Input
                 id="wordOrPhrase"
                 name="wordOrPhrase"
-                placeholder="E.g., wasi"
+                placeholder="Ej., wasi"
                 required
               />
               {state.errors?.wordOrPhrase && (
@@ -107,7 +107,7 @@ export function TranslateClient() {
             <Card>
               <CardHeader className="flex flex-row items-center gap-2">
                 <Sparkles className="h-5 w-5 text-primary" />
-                <CardTitle>Definition</CardTitle>
+                <CardTitle>Definición</CardTitle>
               </CardHeader>
               <CardContent>
                 <p>{state.data.definition}</p>
@@ -116,7 +116,7 @@ export function TranslateClient() {
             <Card>
               <CardHeader className="flex flex-row items-center gap-2">
                 <BookText className="h-5 w-5 text-accent" />
-                <CardTitle>Dialect Considerations</CardTitle>
+                <CardTitle>Consideraciones Dialectales</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
@@ -129,10 +129,10 @@ export function TranslateClient() {
           <Card className="flex h-full flex-col items-center justify-center border-dashed bg-card/80 p-8 text-center">
             <Sparkles className="mb-4 h-12 w-12 text-muted-foreground/50" />
             <h3 className="text-lg font-semibold text-muted-foreground">
-              Results will appear here
+              Los resultados aparecerán aquí
             </h3>
             <p className="text-sm text-muted-foreground/80">
-              Enter a sentence and a term to get started.
+              Introduce una oración y un término para empezar.
             </p>
           </Card>
         )}

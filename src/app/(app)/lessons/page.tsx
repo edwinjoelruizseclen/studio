@@ -8,48 +8,48 @@ import { useState, useEffect } from 'react';
 
 const lessonCategoriesData = [
   {
-    category: 'Beginner Module',
+    category: 'Módulo Principiante',
     lessons: [
       {
         id: 1,
-        title: 'Greetings & Introductions',
+        title: 'Saludos y Presentaciones',
         progress: 0,
-        description: 'Learn to say hello and introduce yourself.',
+        description: 'Aprende a saludar y presentarte.',
       },
       {
         id: 2,
-        title: 'Common Phrases',
+        title: 'Frases Comunes',
         progress: 0,
-        description: 'Essential phrases for everyday conversation.',
+        description: 'Frases esenciales para la conversación diaria.',
       },
       {
         id: 3,
-        title: 'Numbers & Colors',
+        title: 'Números y Colores',
         progress: 0,
-        description: 'Master counting and describing things with color.',
+        description: 'Domina contar y describir cosas con colores.',
       },
       {
         id: 4,
-        title: 'Family Members',
+        title: 'Miembros de la Familia',
         progress: 0,
-        description: 'Talk about your family.',
+        description: 'Habla sobre tu familia.',
       },
     ],
   },
   {
-    category: 'Intermediate Module',
+    category: 'Módulo Intermedio',
     lessons: [
       {
         id: 5,
-        title: 'Ordering Food',
+        title: 'Pedir Comida',
         progress: 0,
-        description: 'Navigate a restaurant menu in Quechua.',
+        description: 'Navega por el menú de un restaurante en quechua.',
       },
       {
         id: 6,
-        title: 'Asking for Directions',
+        title: 'Pedir Direcciones',
         progress: 0,
-        description: 'Find your way around.',
+        description: 'Encuentra tu camino.',
       },
     ],
   },
@@ -75,7 +75,7 @@ export default function LessonsPage() {
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
-      <h1 className="mb-6 font-headline text-3xl font-bold">All Lessons</h1>
+      <h1 className="mb-6 font-headline text-3xl font-bold">Todas las Lecciones</h1>
       <div className="space-y-8">
         {lessonCategories.map((category) => (
           <div key={category.category}>

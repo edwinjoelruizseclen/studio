@@ -6,10 +6,10 @@ import { BookOpen, Gamepad2, Mic, MessageSquareQuote } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
-  { href: '/dashboard', label: 'Learn', icon: BookOpen },
-  { href: '/games', label: 'Games', icon: Gamepad2 },
-  { href: '/pronunciation', label: 'Practice', icon: Mic },
-  { href: '/translate', label: 'Translator', icon: MessageSquareQuote },
+  { href: '/dashboard', label: 'Aprender', icon: BookOpen },
+  { href: '/games', label: 'Juegos', icon: Gamepad2 },
+  { href: '/pronunciation', label: 'Práctica', icon: Mic },
+  { href: '/translate', label: 'Traductor', icon: MessageSquareQuote },
 ];
 
 export default function BottomNav() {

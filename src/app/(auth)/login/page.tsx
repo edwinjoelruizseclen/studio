@@ -34,35 +34,35 @@ export default function LoginPage() {
   return (
     <Card>
       <CardHeader className="text-center">
-        <CardTitle>Welcome Back!</CardTitle>
+        <CardTitle>¡Bienvenido de Nuevo!</CardTitle>
         <CardDescription>
-          Enter your credentials to access your account.
+          Introduce tus credenciales para acceder a tu cuenta.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="m@example.com" required />
+            <Label htmlFor="email">Correo Electrónico</Label>
+            <Input id="email" type="email" placeholder="m@ejemplo.com" required />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">Contraseña</Label>
             <Input id="password" type="password" required />
           </div>
           <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Sign In
+            Iniciar Sesión
           </Button>
         </form>
       </CardContent>
       <CardFooter className="flex-col">
         <p className="text-sm text-muted-foreground">
-          Don&apos;t have an account?{' '}
+          ¿No tienes una cuenta?{' '}
           <Link
             href="/signup"
             className="font-semibold text-primary underline-offset-4 hover:underline"
           >
-            Sign Up
+            Regístrate
           </Link>
         </p>
       </CardFooter>

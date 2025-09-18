@@ -13,25 +13,25 @@ import {
 
 const games = [
   {
-    title: 'Word Matching',
-    description: 'Match Quechua words to their English translations.',
+    title: 'Emparejar Palabras',
+    description: 'Une palabras en quechua con sus traducciones.',
     href: '/games/word-matching',
     icon: AlignHorizontalDistributeCenter,
-    status: 'Available',
+    status: 'Disponible',
   },
   {
-    title: 'Fill in the Blanks',
-    description: 'Complete sentences by choosing the correct word.',
+    title: 'Rellena los Huecos',
+    description: 'Completa oraciones eligiendo la palabra correcta.',
     href: '#',
     icon: Puzzle,
-    status: 'Coming Soon',
+    status: 'Próximamente',
   },
   {
-    title: 'Memory',
-    description: 'Find matching pairs of words and images.',
+    title: 'Memoria',
+    description: 'Encuentra pares de palabras e imágenes.',
     href: '#',
     icon: MemoryStick,
-    status: 'Coming Soon',
+    status: 'Próximamente',
   },
 ];
 
@@ -39,9 +39,9 @@ export default function GamesPage() {
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
       <div className="mb-8 text-center">
-        <h1 className="font-headline text-3xl font-bold">Mini-Games</h1>
+        <h1 className="font-headline text-3xl font-bold">Mini-Juegos</h1>
         <p className="text-muted-foreground">
-          Practice your vocabulary in a fun and engaging way!
+          ¡Practica tu vocabulario de una forma divertida y atractiva!
         </p>
       </div>
       <div className="mx-auto grid max-w-4xl gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -49,7 +49,7 @@ export default function GamesPage() {
           <Card
             key={game.title}
             className={
-              game.status === 'Coming Soon'
+              game.status === 'Próximamente'
                 ? 'opacity-50'
                 : 'transition-all hover:-translate-y-1 hover:shadow-lg'
             }
@@ -57,7 +57,7 @@ export default function GamesPage() {
             <Link
               href={game.href}
               className={
-                game.status === 'Coming Soon'
+                game.status === 'Próximamente'
                   ? 'pointer-events-none'
                   : 'block h-full'
               }
@@ -72,7 +72,7 @@ export default function GamesPage() {
                 <p className="text-sm text-muted-foreground">
                   {game.description}
                 </p>
-                {game.status === 'Coming Soon' && (
+                {game.status === 'Próximamente' && (
                   <div className="mt-4 text-xs font-semibold text-accent">
                     {game.status}
                   </div>

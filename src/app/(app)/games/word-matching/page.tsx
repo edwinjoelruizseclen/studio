@@ -101,13 +101,13 @@ export default function WordMatchingGame() {
           className="mb-4 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Games
+          Volver a Juegos
         </Link>
         <h1 className="mb-2 text-center font-headline text-3xl font-bold">
-          Word Matching
+          Emparejar Palabras
         </h1>
         <p className="mb-4 text-center text-muted-foreground">
-          Match the Quechua word with its English translation.
+          Une la palabra en quechua con su traducción en inglés.
         </p>
         <Progress value={progress} className="mb-6 h-2" />
       </div>
@@ -115,13 +115,13 @@ export default function WordMatchingGame() {
       {isFinished ? (
         <Card className="w-full max-w-md p-8 text-center">
           <CheckCircle className="mx-auto mb-4 h-16 w-16 text-primary" />
-          <h2 className="text-2xl font-bold">Congratulations!</h2>
+          <h2 className="text-2xl font-bold">¡Felicidades!</h2>
           <p className="mt-2 mb-6 text-muted-foreground">
-            You've matched all the words and completed a lesson!
+            ¡Has unido todas las palabras y completado una lección!
           </p>
           <Button onClick={shuffleWords}>
             <Shuffle className="mr-2 h-4 w-4" />
-            Play Again
+            Jugar de Nuevo
           </Button>
         </Card>
       ) : (

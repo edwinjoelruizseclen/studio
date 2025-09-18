@@ -8,8 +8,8 @@ import {
 import { z } from 'zod';
 
 const FormSchema = z.object({
-  sentence: z.string().min(10, 'Please enter a longer sentence.'),
-  wordOrPhrase: z.string().min(1, 'Please enter a word or phrase to define.'),
+  sentence: z.string().min(10, 'Por favor, introduce una frase más larga.'),
+  wordOrPhrase: z.string().min(1, 'Por favor, introduce una palabra o frase para definir.'),
 });
 
 export type FormState = {
@@ -32,7 +32,7 @@ export async function getTranslationAssistance(
 
   if (!validatedFields.success) {
     return {
-      message: 'Validation failed. Please check your inputs.',
+      message: 'La validación falló. Por favor, revisa tus entradas.',
       errors: validatedFields.error.flatten().fieldErrors,
     };
   }
@@ -42,14 +42,14 @@ export async function getTranslationAssistance(
       validatedFields.data as QuechuaTranslationAssistanceInput
     );
     return {
-      message: 'Success!',
+      message: '¡Éxito!',
       data: result,
     };
   } catch (error) {
     console.error(error);
     return {
       message:
-        'An error occurred while fetching the translation. Please try again.',
+        'Ocurrió un error al obtener la traducción. Por favor, inténtalo de nuevo.',
     };
   }
 }
