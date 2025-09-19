@@ -24,9 +24,9 @@ const lessonInfo = {
   }
 };
 
-export default function LessonDetailPage({ params }: { params: { id: string } }) {
-  const lessonId = parseInt(params.id, 10);
-  const info = lessonInfo[params.id as keyof typeof lessonInfo] || { title: 'Lección Desconocida', description: '' };
+export default function LessonDetailPage({ params: { id } }: { params: { id: string } }) {
+  const lessonId = parseInt(id, 10);
+  const info = lessonInfo[id as keyof typeof lessonInfo] || { title: 'Lección Desconocida', description: '' };
   const vocabulary = vocabularyData.vocabulary.filter(
     (v) => v.lessonId === lessonId
   );
@@ -41,7 +41,7 @@ export default function LessonDetailPage({ params }: { params: { id: string } })
         Volver a Lecciones
       </Link>
       <h1 className="mb-2 font-headline text-3xl font-bold">
-        Lección {params.id}: {info.title}
+        Lección {id}: {info.title}
       </h1>
       <p className="mb-8 text-muted-foreground">{info.description}</p>
 

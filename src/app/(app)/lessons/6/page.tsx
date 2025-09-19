@@ -7,7 +7,7 @@ import { VocabularyClient } from '../vocabulary-client';
 
 const vocabulary = vocabularyData.vocabulary.filter(v => v.lessonId === 6);
 
-export default function LessonDetailPage({ params }: { params: { id: string } }) {
+export default function LessonDetailPage({ params: { id } }: { params: { id: string } }) {
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
       <Link
@@ -18,7 +18,7 @@ export default function LessonDetailPage({ params }: { params: { id: string } })
         Volver a Lecciones
       </Link>
       <h1 className="mb-2 font-headline text-3xl font-bold">
-        Lección {params.id}: Pedir Direcciones
+        Lección {id}: Pedir Direcciones
       </h1>
       <p className="mb-8 text-muted-foreground">
         Aprende frases básicas para encontrar tu camino.

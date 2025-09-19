@@ -3,10 +3,11 @@ import { Button } from '@/components/ui/button';
 import { Volume2, ArrowLeft, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import vocabularyData from '@/lib/vocabulary.json';
+import { VocabularyClient } from '../vocabulary-client';
 
 const vocabulary = vocabularyData.vocabulary.filter(v => v.lessonId === 4);
 
-export default function LessonDetailPage({ params }: { params: { id: string } }) {
+export default function LessonDetailPage({ params: { id } }: { params: { id: string } }) {
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
       <Link
@@ -17,7 +18,7 @@ export default function LessonDetailPage({ params }: { params: { id: string } })
         Volver a Lecciones
       </Link>
       <h1 className="mb-2 font-headline text-3xl font-bold">
-        Lección {params.id}: Miembros de la Familia
+        Lección {id}: Miembros de la Familia
       </h1>
       <p className="mb-8 text-muted-foreground">
         Aprende cómo referirte a los miembros de tu familia.
@@ -28,22 +29,7 @@ export default function LessonDetailPage({ params }: { params: { id: string } })
           <CardTitle>Vocabulario</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {vocabulary.map((item) => (
-              <div
-                key={item.quechua}
-                className="flex items-center justify-between rounded-md bg-background p-3 hover:bg-accent/10"
-              >
-                <div>
-                  <p className="text-lg font-semibold">{item.quechua}</p>
-                  <p className="text-muted-foreground">{item.spanish}</p>
-                </div>
-                <Button variant="ghost" size="icon">
-                  <Volume2 className="h-6 w-6" />
-                </Button>
-              </div>
-            ))}
-          </div>
+          <VocabularyClient vocabulary={vocabulary} />
         </CardContent>
       </Card>
 
