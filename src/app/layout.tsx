@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
-import { AuthProvider } from '@/hooks/use-auth';
 
 export const metadata: Metadata = {
   title: 'Rimay App',
@@ -40,10 +39,8 @@ export default function RootLayout({
         <meta name="theme-color" content="#FFFFFF" />
       </head>
       <body className={cn('min-h-screen font-body antialiased')}>
-        <AuthProvider>
           {children}
           <Toaster />
-        </AuthProvider>
       </body>
     </html>
   );

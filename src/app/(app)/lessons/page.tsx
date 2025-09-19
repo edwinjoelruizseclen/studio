@@ -5,8 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { ArrowRight, Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { useAuth } from '@/hooks/use-auth';
-import { getUserProgress } from '@/lib/user-progress';
+import { getLocalUserProgress } from '@/lib/user-progress';
 
 const lessonCategoriesData = [
   {
@@ -60,18 +59,12 @@ const lessonCategoriesData = [
 export default function LessonsPage() {
   const [lessonCategories, setLessonCategories] = useState(lessonCategoriesData);
   const [isLoading, setIsLoading] = useState(true);
-  const { user } = useAuth();
 
   useEffect(() => {
     async function loadProgress() {
-      if (!user) {
-        setIsLoading(false);
-        return;
-      }
       setIsLoading(true);
-
       try {
-        const progress = await getUserProgress(user.uid);
+        const progress = await getLocalUserProgress();
         const updatedCategories = lessonCategoriesData.map((category) => ({
           ...category,
           lessons: category.lessons.map((lesson) => ({
@@ -88,7 +81,7 @@ export default function LessonsPage() {
     }
 
     loadProgress();
-  }, [user]);
+  }, []);
 
   if (isLoading) {
     return (

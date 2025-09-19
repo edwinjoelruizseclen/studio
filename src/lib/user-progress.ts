@@ -1,47 +1,47 @@
-
 // This file will be updated to use Firestore again after the project is recreated.
 
 // Type for lesson progress, where keys are lesson IDs
 export type LessonProgress = {
-  [lessonId: number]: number; // e.g., { 1: 100, 2: 50 }
+  [lessonId: string]: number; // e.g., { "1": 100, "2": 50 }
 };
 
+const LOCAL_STORAGE_KEY = 'rimayAppLessonProgress';
+
 /**
- * Fetches the user's progress.
- * For now, it uses localStorage as a fallback.
- * @param userId The user's unique ID from Firebase Auth.
+ * Fetches the user's progress from localStorage.
  * @returns The user's lesson progress.
  */
-export async function getUserProgress(userId: string): Promise<LessonProgress> {
-  // Fallback to localStorage while Firestore is being reconfigured
+export async function getLocalUserProgress(): Promise<LessonProgress> {
   try {
-    const savedProgress = localStorage.getItem('lessonProgress');
-    if (savedProgress) {
-      return JSON.parse(savedProgress);
+    if (typeof window !== 'undefined') {
+      const savedProgress = window.localStorage.getItem(LOCAL_STORAGE_KEY);
+      if (savedProgress) {
+        return JSON.parse(savedProgress);
+      }
     }
   } catch (e) {
     console.error("Could not parse lesson progress from localStorage", e);
   }
-  return { 1: 50 }; // Default progress
+  // Default progress for a new user
+  return { '1': 50, '2': 60 };
 }
 
 /**
- * Updates a user's progress for a specific lesson.
- * For now, it uses localStorage as a fallback.
- * @param userId The user's unique ID.
+ * Updates a user's progress for a specific lesson in localStorage.
  * @param lessonId The ID of the lesson to update.
  * @param progress The new progress value (0-100).
  */
-export async function updateUserProgress(
-  userId: string,
-  lessonId: number,
+export async function updateLocalUserProgress(
+  lessonId: number | string,
   progress: number
 ): Promise<void> {
     try {
-        const savedProgress = localStorage.getItem('lessonProgress');
+      if (typeof window !== 'undefined') {
+        const savedProgress = window.localStorage.getItem(LOCAL_STORAGE_KEY);
         const currentProgress = savedProgress ? JSON.parse(savedProgress) : {};
-        currentProgress[lessonId] = progress;
-        localStorage.setItem('lessonProgress', JSON.stringify(currentProgress));
+        currentProgress[String(lessonId)] = progress;
+        window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(currentProgress));
+      }
     } catch(e) {
         console.error("Could not save lesson progress to localStorage", e);
     }

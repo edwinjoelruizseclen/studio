@@ -1,10 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { useAuth } from '@/hooks/use-auth';
-import { useRouter, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import AppHeader from '@/components/layout/app-header';
 import BottomNav from '@/components/layout/bottom-nav';
-import { Loader2 } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -39,29 +37,13 @@ export default function AppLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user, loading } = useAuth();
-  const router = useRouter();
   const pathname = usePathname();
   const isMobile = useIsMobile();
   const [open, setOpen] = useState(isMobile ? false : true);
-
-  useEffect(() => {
-    if (!loading && !user) {
-      router.replace(`/`);
-    }
-  }, [user, loading, router, pathname]);
   
   useEffect(() => {
     setOpen(!isMobile);
   }, [isMobile]);
-
-  if (loading || !user) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
   
   return (
     <SidebarProvider open={open} onOpenChange={setOpen}>

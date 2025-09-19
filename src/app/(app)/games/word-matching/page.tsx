@@ -7,8 +7,7 @@ import { ArrowLeft, CheckCircle, Shuffle } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
-import { useAuth } from '@/hooks/use-auth';
-import { updateUserProgress } from '@/lib/user-progress';
+import { updateLocalUserProgress } from '@/lib/user-progress';
 import { useToast } from '@/hooks/use-toast';
 
 const wordPairs = [
@@ -28,7 +27,6 @@ export default function WordMatchingGame() {
   const [matched, setMatched] = useState<string[]>([]);
   const [attempted, setAttempted] = useState<Word[]>([]);
   const [progress, setProgress] = useState(0);
-  const { user, isAnonymous } = useAuth();
   const { toast } = useToast();
 
   const shuffleWords = useCallback(() => {
@@ -56,15 +54,13 @@ export default function WordMatchingGame() {
     
     async function handleGameFinish() {
       if (isFinished) {
-        if (user) {
           try {
-            await updateUserProgress(user.uid, 2, 100);
-            if (!isAnonymous) {
-              toast({
-                title: '¡Lección completada!',
-                description: 'Tu progreso ha sido guardado.',
-              });
-            }
+            // Lesson 2 is the word matching game
+            await updateLocalUserProgress(2, 100); 
+            toast({
+              title: '¡Lección completada!',
+              description: 'Tu progreso ha sido guardado en este dispositivo.',
+            });
           } catch (error) {
             console.error('Failed to update progress', error);
             toast({
@@ -73,24 +69,12 @@ export default function WordMatchingGame() {
               description: 'No se pudo guardar tu progreso.',
             });
           }
-        }
-        // Fallback to localStorage for anonymous users
-        if (isAnonymous) {
-          const savedProgress = localStorage.getItem('lessonProgress');
-          const currentProgress = savedProgress ? JSON.parse(savedProgress) : {};
-          currentProgress[2] = 100;
-          localStorage.setItem('lessonProgress', JSON.stringify(currentProgress));
-           toast({
-              title: '¡Lección completada!',
-              description: 'Crea una cuenta para guardar tu progreso.',
-            });
-        }
       }
     }
     
     handleGameFinish();
 
-  }, [matched, isFinished, user, toast, isAnonymous]);
+  }, [matched, isFinished, toast]);
 
   useEffect(() => {
     if (selected.length === 2) {

@@ -18,8 +18,7 @@ import {
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { useAuth } from '@/hooks/use-auth';
-import { getUserProgress, LessonProgress } from '@/lib/user-progress';
+import { getLocalUserProgress, updateLocalUserProgress } from '@/lib/user-progress';
 
 const initialLessons = [
   { id: 1, title: 'Lección 1: Saludos y Presentaciones', progress: 0 },
@@ -32,15 +31,13 @@ export default function DashboardPage() {
   const [lessonsCompleted, setLessonsCompleted] = useState(0);
   const [totalProgress, setTotalProgress] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const { user } = useAuth();
 
   useEffect(() => {
     async function loadProgress() {
-      if (!user) return;
       setIsLoading(true);
 
       try {
-        const progressData = await getUserProgress(user.uid);
+        const progressData = await getLocalUserProgress();
         
         let completedCount = 0;
         const updatedLessons = initialLessons.map((lesson) => {
@@ -67,7 +64,7 @@ export default function DashboardPage() {
     }
 
     loadProgress();
-  }, [user]);
+  }, []);
 
   if (isLoading) {
     return (
