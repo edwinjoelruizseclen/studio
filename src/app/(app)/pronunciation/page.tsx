@@ -8,13 +8,19 @@ import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
 const phrases = [
-  { id: 1, quechua: 'Allinllachu?', english: 'Hello, how are you?' },
-  { id: 2, quechua: 'Tupananchiskama', english: 'Goodbye' },
-  { id: 3, quechua: 'Sulpayki', english: 'Thank you' },
-  { id: 4, quechua: 'Ari', english: 'Yes' },
-  { id: 5, quechua: 'Manam', english: 'No' },
-  { id: 6, quechua: 'Yaku, panay', english: 'Water, please' },
+  { id: 1, quechua: 'Allinllachu?', spanish: '¿Hola, cómo estás?' },
+  { id: 2, quechua: 'Allinllam', spanish: 'Estoy bien' },
+  { id: 3, quechua: 'Imaynallam sutiyki?', spanish: '¿Cómo te llamas?' },
+  { id: 4, quechua: 'Sutiyqa Juan-m', spanish: 'Mi nombre es Juan' },
+  { id: 5, quechua: 'Sulpayki', spanish: 'Gracias' },
+  { id: 6, quechua: 'Ari', spanish: 'Sí' },
+  { id: 7, quechua: 'Manam', spanish: 'No' },
+  { id: 8, quechua: 'Maymantam kanki?', spanish: '¿De dónde eres?' },
+  { id: 9, quechua: 'Yaku, panay', spanish: 'Agua, por favor' },
+  { id: 10, quechua: 'Haykataq?', spanish: '¿Cuánto cuesta?' },
+  { id: 11, quechua: 'Tupananchiskama', spanish: 'Hasta que nos encontremos' },
 ];
+
 
 function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
   const { toast } = useToast();
@@ -118,7 +124,7 @@ function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
       <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
         <div>
           <p className="text-xl font-semibold">{phrase.quechua}</p>
-          <p className="text-muted-foreground">{phrase.english}</p>
+          <p className="text-muted-foreground">{phrase.spanish}</p>
         </div>
         <div className="flex items-center gap-2">
           <Button
