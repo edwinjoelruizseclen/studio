@@ -22,16 +22,16 @@ const games = [
   {
     title: 'Rellena los Huecos',
     description: 'Completa oraciones eligiendo la palabra correcta.',
-    href: '#',
+    href: '/games/fill-in-the-blanks',
     icon: Puzzle,
-    status: 'Próximamente',
+    status: 'Disponible',
   },
   {
     title: 'Memoria',
     description: 'Encuentra pares de palabras e imágenes.',
-    href: '#',
+    href: '/games/memory',
     icon: MemoryStick,
-    status: 'Próximamente',
+    status: 'Disponible',
   },
 ];
 
