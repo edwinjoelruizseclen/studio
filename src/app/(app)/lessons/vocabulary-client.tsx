@@ -65,7 +65,7 @@ export function VocabularyClient({ vocabulary }: { vocabulary: VocabularyItem[] 
             variant="ghost" 
             size="icon" 
             onClick={() => handlePlayback(item)}
-            disabled={playingId !== null && playingId !== item.id}
+            disabled={playingId !== null}
           >
             {playingId === item.id ? (
                 <Loader2 className="h-6 w-6 animate-spin" />
