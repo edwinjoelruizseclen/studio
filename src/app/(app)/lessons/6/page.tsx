@@ -2,17 +2,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Volume2, ArrowLeft, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import vocabularyData from '@/lib/vocabulary.json';
 
-const vocabulary = [
-  { quechua: 'Maypi?', spanish: '¿Dónde está?' },
-  { quechua: 'Ñan', spanish: 'Camino, calle' },
-  { quechua: 'Paña', spanish: 'Derecha' },
-  { quechua: 'Lluq\'i', spanish: 'Izquierda' },
-  { quechua: 'Siq\'u', spanish: 'Recto, derecho' },
-  { quechua: 'Kaypi', spanish: 'Aquí' },
-  { quechua: 'Chaypi', spanish: 'Ahí' },
-  { quechua: 'Waqpi', spanish: 'Allá' },
-];
+const vocabulary = vocabularyData.vocabulary.filter(v => v.lessonId === 6);
 
 export default function LessonDetailPage({ params }: { params: { id: string } }) {
   return (

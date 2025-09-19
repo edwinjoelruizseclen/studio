@@ -2,17 +2,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Volume2, ArrowLeft, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import vocabularyData from '@/lib/vocabulary.json';
 
-const vocabulary = [
-  { quechua: 'Mikhuna', spanish: 'Comida' },
-  { quechua: 'Yaku', spanish: 'Agua' },
-  { quechua: 'T\'anta', spanish: 'Pan' },
-  { quechua: 'Aycha', spanish: 'Carne' },
-  { quechua: 'Papa', spanish: 'Papa' },
-  { quechua: 'Sara', spanish: 'Maíz' },
-  { quechua: 'Upyana', spanish: 'Bebida' },
-  { quechua: 'Munayman', spanish: 'Quisiera...' },
-];
+const vocabulary = vocabularyData.vocabulary.filter(v => v.lessonId === 5);
 
 export default function LessonDetailPage({ params }: { params: { id: string } }) {
   return (

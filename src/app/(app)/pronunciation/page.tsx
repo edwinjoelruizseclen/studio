@@ -6,20 +6,11 @@ import { Volume2, Mic, Pause, Play, Loader2 } from 'lucide-react';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import vocabularyData from '@/lib/vocabulary.json';
 
-const phrases = [
-  { id: 1, quechua: 'Allinllachu?', spanish: '¿Hola, cómo estás?' },
-  { id: 2, quechua: 'Allinllam', spanish: 'Estoy bien' },
-  { id: 3, quechua: 'Imaynallam sutiyki?', spanish: '¿Cómo te llamas?' },
-  { id: 4, quechua: 'Sutiyqa Juan-m', spanish: 'Mi nombre es Juan' },
-  { id: 5, quechua: 'Sulpayki', spanish: 'Gracias' },
-  { id: 6, quechua: 'Ari', spanish: 'Sí' },
-  { id: 7, quechua: 'Manam', spanish: 'No' },
-  { id: 8, quechua: 'Maymantam kanki?', spanish: '¿De dónde eres?' },
-  { id: 9, quechua: 'Yaku, panay', spanish: 'Agua, por favor' },
-  { id: 10, quechua: 'Haykataq?', spanish: '¿Cuánto cuesta?' },
-  { id: 11, quechua: 'Tupananchiskama', spanish: 'Hasta que nos encontremos' },
-];
+const phrases = vocabularyData.vocabulary
+  .filter(v => v.lessonId === 1 || v.lessonId === null)
+  .sort((a, b) => a.id - b.id);
 
 
 function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {

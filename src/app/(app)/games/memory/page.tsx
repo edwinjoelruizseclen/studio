@@ -9,15 +9,11 @@ import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
 import { updateLocalUserProgress } from '@/lib/user-progress';
 import { useToast } from '@/hooks/use-toast';
+import vocabularyData from '@/lib/vocabulary.json';
 
-const pairs = [
-  { quechua: 'Tayta', spanish: 'Padre' },
-  { quechua: 'Mama', spanish: 'Madre' },
-  { quechua: 'Wawa', spanish: 'Hijo/a' },
-  { quechua: 'Turi', spanish: 'Hermano (de hermana)' },
-  { quechua: 'Pani', spanish: 'Hermana (de hermano)' },
-  { quechua: 'Masi', spanish: 'Compañero/a' },
-];
+const pairs = vocabularyData.vocabulary
+  .filter((v) => v.lessonId === 4)
+  .map(({ quechua, spanish }) => ({ quechua, spanish }));
 
 type CardInfo = {
   id: number;

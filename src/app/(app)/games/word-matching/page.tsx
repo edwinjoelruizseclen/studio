@@ -9,17 +9,13 @@ import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
 import { updateLocalUserProgress } from '@/lib/user-progress';
 import { useToast } from '@/hooks/use-toast';
+import vocabularyData from '@/lib/vocabulary.json';
 
-const wordPairs = [
-  { quechua: 'Wasi', english: 'Casa' },
-  { quechua: 'Allqu', english: 'Perro' },
-  { quechua: 'Misi', english: 'Gato' },
-  { quechua: 'Yaku', english: 'Agua' },
-  { quechua: 'Inti', english: 'Sol' },
-  { quechua: 'Killa', english: 'Luna' },
-];
+const wordPairs = vocabularyData.vocabulary
+  .filter((v) => v.lessonId === 2)
+  .map(({ quechua, spanish }) => ({ quechua, spanish }));
 
-type Word = { type: 'quechua' | 'english'; text: string };
+type Word = { type: 'quechua' | 'spanish'; text: string };
 
 export default function WordMatchingGame() {
   const [words, setWords] = useState<Word[]>([]);
@@ -33,10 +29,10 @@ export default function WordMatchingGame() {
     const quechuaWords = wordPairs.map(
       (p) => ({ type: 'quechua', text: p.quechua } as Word)
     );
-    const englishWords = wordPairs.map(
-      (p) => ({ type: 'english', text: p.english } as Word)
+    const spanishWords = wordPairs.map(
+      (p) => ({ type: 'spanish', text: p.spanish } as Word)
     );
-    const allWords = [...quechuaWords, ...englishWords];
+    const allWords = [...quechuaWords, ...spanishWords];
     setWords(allWords.sort(() => Math.random() - 0.5));
     setMatched([]);
     setSelected([]);
@@ -82,13 +78,13 @@ export default function WordMatchingGame() {
       const [first, second] = selected;
       const pair = wordPairs.find(
         (p) =>
-          (p.quechua === first.text && p.english === second.text) ||
-          (p.english === first.text && p.quechua === second.text)
+          (p.quechua === first.text && p.spanish === second.text) ||
+          (p.spanish === first.text && p.quechua === second.text)
       );
 
       if (pair) {
         setTimeout(() => {
-          setMatched((prev) => [...prev, pair.quechua, pair.english]);
+          setMatched((prev) => [...prev, pair.quechua, pair.spanish]);
           setSelected([]);
           setAttempted([]);
         }, 500);

@@ -2,18 +2,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Volume2, ArrowLeft, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import vocabularyData from '@/lib/vocabulary.json';
 
-const vocabulary = [
-  { quechua: 'Tayta', spanish: 'Padre, señor' },
-  { quechua: 'Mama', spanish: 'Madre, señora' },
-  { quechua: 'Wawa', spanish: 'Hijo/a, bebé' },
-  { quechua: 'Churi', spanish: 'Hijo (del padre)' },
-  { quechua: 'Ususi', spanish: 'Hija (del padre)' },
-  { quechua: 'Turi', spanish: 'Hermano (de la hermana)' },
-  { quechua: 'Pani', spanish: 'Hermana (del hermano)' },
-  { quechua: 'Ñaña', spanish: 'Hermana (de la hermana)' },
-  { quechua: 'Wawqi', spanish: 'Hermano (del hermano)' },
-];
+const vocabulary = vocabularyData.vocabulary.filter(v => v.lessonId === 4);
 
 export default function LessonDetailPage({ params }: { params: { id: string } }) {
   return (
