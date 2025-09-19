@@ -1,12 +1,13 @@
-
 'use client';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Volume2, Mic, Pause, Play, Loader2 } from 'lucide-react';
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import vocabularyData from '@/lib/vocabulary.json';
+import { getAudio } from '../lessons/actions';
+
 
 const phrases = vocabularyData.vocabulary
   .filter(v => v.lessonId === 1 || v.lessonId === null)
@@ -22,27 +23,34 @@ function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
   
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const nativeAudioRef = useRef<HTMLAudioElement | null>(null);
 
-  const handleNativePlayback = useCallback(() => {
-    if (typeof window === 'undefined' || !window.speechSynthesis) {
-        toast({ variant: 'destructive', title: 'Error', description: 'La síntesis de voz no es compatible con tu navegador.' });
-        return;
-    }
+  const handleNativePlayback = async () => {
+    if (isSynthesizing) return;
     
-    setIsSynthesizing(true);
-    const utterance = new SpeechSynthesisUtterance(phrase.quechua);
-    utterance.lang = 'es-ES'; // Use Spanish voice as a fallback for Quechua pronunciation
-    utterance.rate = 0.8;
-    
-    utterance.onend = () => setIsSynthesizing(false);
-    utterance.onerror = () => {
+    try {
+      setIsSynthesizing(true);
+      const audioDataUri = await getAudio(phrase.quechua);
+      if (!audioDataUri) {
+        throw new Error('No se pudo generar el audio.');
+      }
+      
+      const audio = new Audio(audioDataUri);
+      nativeAudioRef.current = audio;
+      audio.play();
+
+      audio.onended = () => setIsSynthesizing(false);
+      audio.onerror = () => {
         setIsSynthesizing(false);
         toast({ variant: 'destructive', title: 'Error', description: 'No se pudo reproducir el audio.' });
-    };
+      };
 
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(utterance);
-  }, [phrase.quechua, toast]);
+    } catch (error: any) {
+        setIsSynthesizing(false);
+        toast({ variant: 'destructive', title: 'Error', description: error.message || 'No se pudo reproducir el audio.' });
+    }
+  };
+
 
   const handleRecord = async () => {
     if (isRecording) {
@@ -103,6 +111,9 @@ function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
         if (audioRef.current) {
             audioRef.current.pause();
         }
+        if (nativeAudioRef.current) {
+            nativeAudioRef.current.pause();
+        }
         if (audioUrl) {
             URL.revokeObjectURL(audioUrl);
         }
@@ -123,7 +134,7 @@ function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
             size="icon"
             aria-label="Escuchar pronunciación nativa"
             onClick={handleNativePlayback}
-            disabled={isSynthesizing}
+            disabled={isSynthesizing || isRecording}
           >
              {isSynthesizing ? <Loader2 className="h-5 w-5 animate-spin" /> : <Volume2 className="h-5 w-5" />}
           </Button>
@@ -132,13 +143,14 @@ function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
             size="icon"
             aria-label={isRecording ? 'Detener grabación' : 'Empezar a grabar'}
             onClick={handleRecord}
+            disabled={isSynthesizing}
           >
             <Mic className="h-5 w-5" />
           </Button>
           <Button 
             variant="outline" 
             size="icon" 
-            disabled={!audioUrl} 
+            disabled={!audioUrl || isRecording || isSynthesizing} 
             aria-label="Reproducir tu grabación"
             onClick={handleUserPlayback}
             >
@@ -176,7 +188,7 @@ export default function PronunciationPage() {
           Práctica de Pronunciación
         </h1>
         <p className="text-muted-foreground">
-          Escucha a hablantes nativos, grábate y compara para perfeccionar
+          Escucha una pronunciación de alta calidad, grábate y compara para perfeccionar
           tu acento.
         </p>
       </div>

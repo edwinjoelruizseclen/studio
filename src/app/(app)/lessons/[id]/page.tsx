@@ -3,12 +3,25 @@ import { Button } from '@/components/ui/button';
 import { Volume2, ArrowLeft, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import vocabularyData from '@/lib/vocabulary.json';
+import { VocabularyClient } from '../vocabulary-client';
 
 const lessonInfo = {
   '1': {
     title: 'Saludos y Presentaciones',
     description: 'Aprende lo básico para saludar y presentarte en quechua.',
   },
+   '2': {
+    title: 'Frases Comunes',
+    description: 'Frases esenciales para la conversación diaria.',
+  },
+  '3': {
+    title: 'Números y Colores',
+    description: 'Domina contar y describir cosas con colores.',
+  },
+  '4': {
+    title: 'Miembros de la Familia',
+    description: 'Habla sobre tu familia.',
+  }
 };
 
 export default function LessonDetailPage({ params }: { params: { id: string } }) {
@@ -37,22 +50,7 @@ export default function LessonDetailPage({ params }: { params: { id: string } })
           <CardTitle>Vocabulario</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {vocabulary.map((item) => (
-              <div
-                key={item.quechua}
-                className="flex items-center justify-between rounded-md bg-background p-3 hover:bg-accent/10"
-              >
-                <div>
-                  <p className="text-lg font-semibold">{item.quechua}</p>
-                  <p className="text-muted-foreground">{item.spanish}</p>
-                </div>
-                <Button variant="ghost" size="icon">
-                  <Volume2 className="h-6 w-6" />
-                </Button>
-              </div>
-            ))}
-          </div>
+            <VocabularyClient vocabulary={vocabulary} />
         </CardContent>
       </Card>
 
