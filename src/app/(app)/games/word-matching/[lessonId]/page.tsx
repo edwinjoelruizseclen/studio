@@ -11,13 +11,15 @@ import { updateLocalUserProgress } from '@/lib/user-progress';
 import { useToast } from '@/hooks/use-toast';
 import vocabularyData from '@/lib/vocabulary.json';
 
-const wordPairs = vocabularyData.vocabulary
-  .filter((v) => v.lessonId === 2)
-  .map(({ quechua, spanish }) => ({ quechua, spanish }));
-
 type Word = { type: 'quechua' | 'spanish'; text: string };
 
-export default function WordMatchingGame() {
+export default function WordMatchingGame({ params }: { params: { lessonId: string } }) {
+  const lessonId = parseInt(params.lessonId, 10);
+  const [wordPairs, setWordPairs] = useState(() => vocabularyData.vocabulary
+    .filter((v) => v.lessonId === lessonId)
+    .map(({ quechua, spanish }) => ({ quechua, spanish }))
+  );
+  
   const [words, setWords] = useState<Word[]>([]);
   const [selected, setSelected] = useState<Word[]>([]);
   const [matched, setMatched] = useState<string[]>([]);
@@ -37,25 +39,26 @@ export default function WordMatchingGame() {
     setMatched([]);
     setSelected([]);
     setAttempted([]);
-  }, []);
+  }, [wordPairs]);
 
   useEffect(() => {
     shuffleWords();
   }, [shuffleWords]);
 
-  const isFinished = matched.length === wordPairs.length * 2;
+  const isFinished = matched.length === wordPairs.length * 2 && wordPairs.length > 0;
 
   useEffect(() => {
-    setProgress((matched.length / (wordPairs.length * 2)) * 100);
+    if (wordPairs.length > 0) {
+      setProgress((matched.length / (wordPairs.length * 2)) * 100);
+    }
     
     async function handleGameFinish() {
       if (isFinished) {
           try {
-            // Lesson 2 is the word matching game
-            await updateLocalUserProgress(2, 100); 
+            await updateLocalUserProgress(lessonId, 100); 
             toast({
               title: '¡Lección completada!',
-              description: 'Tu progreso ha sido guardado en este dispositivo.',
+              description: `Has dominado el vocabulario de la lección ${lessonId}.`,
             });
           } catch (error) {
             console.error('Failed to update progress', error);
@@ -70,7 +73,7 @@ export default function WordMatchingGame() {
     
     handleGameFinish();
 
-  }, [matched, isFinished, toast]);
+  }, [matched, isFinished, toast, lessonId, wordPairs.length]);
 
   useEffect(() => {
     if (selected.length === 2) {
@@ -95,7 +98,7 @@ export default function WordMatchingGame() {
         }, 800);
       }
     }
-  }, [selected]);
+  }, [selected, wordPairs]);
 
   const handleWordClick = (word: Word) => {
     if (
@@ -106,6 +109,22 @@ export default function WordMatchingGame() {
       setSelected((prev) => [...prev, word]);
     }
   };
+
+  if (wordPairs.length === 0) {
+    return (
+      <div className="container mx-auto flex flex-col items-center p-4 md:p-6 lg:p-8">
+        <div className="w-full max-w-md text-center">
+            <h2 className="text-2xl font-bold">Juego no disponible</h2>
+            <p className="mt-2 mb-6 text-muted-foreground">
+                No hay vocabulario de emparejamiento para esta lección.
+            </p>
+            <Link href="/games">
+                <Button variant="outline">Volver a Juegos</Button>
+            </Link>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="container mx-auto flex flex-col items-center p-4 md:p-6 lg:p-8">
@@ -121,7 +140,7 @@ export default function WordMatchingGame() {
           Emparejar Palabras
         </h1>
         <p className="mb-4 text-center text-muted-foreground">
-          Une la palabra en quechua con su traducción en español.
+          Lección {lessonId}: Une la palabra en quechua con su traducción en español.
         </p>
         <Progress value={progress} className="mb-6 h-2" />
       </div>
@@ -171,3 +190,4 @@ export default function WordMatchingGame() {
     </div>
   );
 }
+

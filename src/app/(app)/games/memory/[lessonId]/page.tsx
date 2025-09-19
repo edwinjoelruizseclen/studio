@@ -11,10 +11,6 @@ import { updateLocalUserProgress } from '@/lib/user-progress';
 import { useToast } from '@/hooks/use-toast';
 import vocabularyData from '@/lib/vocabulary.json';
 
-const pairs = vocabularyData.vocabulary
-  .filter((v) => v.lessonId === 4)
-  .map(({ quechua, spanish }) => ({ quechua, spanish }));
-
 type CardInfo = {
   id: number;
   type: 'quechua' | 'spanish';
@@ -22,7 +18,13 @@ type CardInfo = {
   pairId: number;
 };
 
-export default function MemoryGame() {
+export default function MemoryGame({ params }: { params: { lessonId: string } }) {
+  const lessonId = parseInt(params.lessonId, 10);
+  const [pairs, setPairs] = useState(() => vocabularyData.vocabulary
+    .filter((v) => v.lessonId === lessonId)
+    .map(({ quechua, spanish }) => ({ quechua, spanish }))
+  );
+  
   const [cards, setCards] = useState<CardInfo[]>([]);
   const [flipped, setFlipped] = useState<CardInfo[]>([]);
   const [matched, setMatched] = useState<number[]>([]);
@@ -30,6 +32,7 @@ export default function MemoryGame() {
   const { toast } = useToast();
 
   const createDeck = useCallback(() => {
+    if (pairs.length === 0) return;
     const deck = pairs.flatMap((pair, index) => [
       { id: index * 2, type: 'quechua', text: pair.quechua, pairId: index },
       { id: index * 2 + 1, type: 'spanish', text: pair.spanish, pairId: index },
@@ -37,25 +40,26 @@ export default function MemoryGame() {
     setCards(deck.sort(() => Math.random() - 0.5));
     setFlipped([]);
     setMatched([]);
-  }, []);
+  }, [pairs]);
 
   useEffect(() => {
     createDeck();
   }, [createDeck]);
   
-  const isFinished = matched.length === pairs.length;
+  const isFinished = matched.length === pairs.length && pairs.length > 0;
 
   useEffect(() => {
-    setProgress((matched.length / pairs.length) * 100);
+    if (pairs.length > 0) {
+      setProgress((matched.length / pairs.length) * 100);
+    }
 
     async function handleGameFinish() {
       if (isFinished) {
           try {
-            // Lesson 4 is the memory game
-            await updateLocalUserProgress(4, 100); 
+            await updateLocalUserProgress(lessonId, 100); 
             toast({
               title: '¡Lección completada!',
-              description: 'Has dominado "Miembros de la Familia" y tu progreso ha sido guardado.',
+              description: `Has dominado el juego de memoria para la lección ${lessonId}.`,
             });
           } catch (error) {
             console.error('Failed to update progress', error);
@@ -69,7 +73,7 @@ export default function MemoryGame() {
     }
     handleGameFinish();
 
-  }, [matched, isFinished, toast]);
+  }, [matched, isFinished, toast, lessonId, pairs.length]);
 
   useEffect(() => {
     if (flipped.length === 2) {
@@ -91,6 +95,23 @@ export default function MemoryGame() {
     }
   };
 
+  if (pairs.length === 0) {
+    return (
+      <div className="container mx-auto flex flex-col items-center p-4 md:p-6 lg:p-8">
+        <div className="w-full max-w-md text-center">
+            <h2 className="text-2xl font-bold">Juego no disponible</h2>
+            <p className="mt-2 mb-6 text-muted-foreground">
+                No hay vocabulario para el juego de memoria en esta lección.
+            </p>
+            <Link href="/games">
+                <Button variant="outline">Volver a Juegos</Button>
+            </Link>
+        </div>
+      </div>
+    )
+  }
+
+
   return (
     <div className="container mx-auto flex flex-col items-center p-4 md:p-6 lg:p-8">
       <div className="w-full max-w-2xl">
@@ -99,7 +120,7 @@ export default function MemoryGame() {
           Volver a Juegos
         </Link>
         <h1 className="mb-2 text-center font-headline text-3xl font-bold">Juego de Memoria</h1>
-        <p className="mb-4 text-center text-muted-foreground">Encuentra los pares de palabras en quechua y español.</p>
+        <p className="mb-4 text-center text-muted-foreground">Lección {lessonId}: Encuentra los pares de palabras.</p>
         <Progress value={progress} className="mb-6 h-2" />
       </div>
 

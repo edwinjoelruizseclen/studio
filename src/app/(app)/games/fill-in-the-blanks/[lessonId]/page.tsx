@@ -10,32 +10,37 @@ import { Progress } from '@/components/ui/progress';
 import { updateLocalUserProgress } from '@/lib/user-progress';
 import { useToast } from '@/hooks/use-toast';
 
-const questions = [
+const allQuestions = [
   {
+    lessonId: 3,
     sentence: 'Hatun __ puka wasi kani.',
     options: ['allqu', 'misi', 'wasi'],
     answer: 'wasi',
     translation: 'Tengo una casa roja y grande.',
   },
   {
+    lessonId: 3,
     sentence: 'Payqa __ mikun.',
     options: ['yaku', 'tanta', 'killa'],
     answer: 'tanta',
     translation: 'Él/Ella come pan.',
   },
   {
+    lessonId: 3,
     sentence: 'Ñuqa yachaywasiman __.',
     options: ['purini', 'pukllani', 'rini'],
     answer: 'rini',
     translation: 'Yo voy a la escuela.',
   },
   {
+    lessonId: 3,
     sentence: 'Qamqa __ munanki.',
     options: ['yaku', 'inti', 'ñan'],
     answer: 'yaku',
     translation: 'Tú quieres agua.',
   },
   {
+    lessonId: 3,
     sentence: '__ inti llunshin.',
     options: ['Chisi', 'Pacha', 'Punchaw'],
     answer: 'Punchaw',
@@ -43,7 +48,10 @@ const questions = [
   },
 ];
 
-export default function FillInTheBlanksGame() {
+export default function FillInTheBlanksGame({ params }: { params: { lessonId: string } }) {
+  const lessonId = parseInt(params.lessonId, 10);
+  const [questions, setQuestions] = useState(() => allQuestions.filter(q => q.lessonId === lessonId));
+  
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
@@ -51,7 +59,7 @@ export default function FillInTheBlanksGame() {
   const [showFeedback, setShowFeedback] = useState(false);
   const { toast } = useToast();
 
-  const progress = (currentQuestionIndex / questions.length) * 100;
+  const progress = questions.length > 0 ? (currentQuestionIndex / questions.length) * 100 : 0;
   const isFinished = currentQuestionIndex === questions.length;
   const currentQuestion = questions[currentQuestionIndex];
 
@@ -76,7 +84,7 @@ export default function FillInTheBlanksGame() {
       setIsCorrect(null);
       setShowFeedback(false);
     }
-  }, [currentQuestionIndex]);
+  }, [currentQuestionIndex, questions.length]);
   
   const resetGame = () => {
     setCurrentQuestionIndex(0);
@@ -88,13 +96,12 @@ export default function FillInTheBlanksGame() {
 
   useEffect(() => {
     async function handleGameFinish() {
-      if (isFinished) {
+      if (isFinished && questions.length > 0) {
           try {
-            // Lesson 3 is Fill in the Blanks
-            await updateLocalUserProgress(3, 100); 
+            await updateLocalUserProgress(lessonId, 100); 
             toast({
               title: '¡Lección completada!',
-              description: 'Has dominado "Números y Colores" y tu progreso ha sido guardado.',
+              description: `Has dominado "Rellena los Huecos" para la lección ${lessonId}.`,
             });
           } catch (error) {
             console.error('Failed to update progress', error);
@@ -108,7 +115,23 @@ export default function FillInTheBlanksGame() {
     }
     
     handleGameFinish();
-  }, [isFinished, toast]);
+  }, [isFinished, toast, lessonId, questions.length]);
+
+  if (questions.length === 0) {
+    return (
+      <div className="container mx-auto flex flex-col items-center p-4 md:p-6 lg:p-8">
+        <div className="w-full max-w-md text-center">
+            <h2 className="text-2xl font-bold">Juego no disponible</h2>
+            <p className="mt-2 mb-6 text-muted-foreground">
+                No hay preguntas de "Rellena los Huecos" para esta lección.
+            </p>
+            <Link href="/games">
+                <Button variant="outline">Volver a Juegos</Button>
+            </Link>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="container mx-auto flex flex-col items-center p-4 md:p-6 lg:p-8">
@@ -124,7 +147,7 @@ export default function FillInTheBlanksGame() {
           Rellena los Huecos
         </h1>
         <p className="mb-4 text-center text-muted-foreground">
-          Elige la palabra correcta para completar la oración.
+          Lección {lessonId}: Elige la palabra correcta para completar la oración.
         </p>
         <Progress value={progress} className="mb-6 h-2" />
       </div>
