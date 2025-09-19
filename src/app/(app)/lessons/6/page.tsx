@@ -1,11 +1,15 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Volume2, ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import vocabularyData from '@/lib/vocabulary.json';
 import { VocabularyClient } from '../vocabulary-client';
 
-const vocabulary = vocabularyData.vocabulary.filter(v => v.lessonId === 6);
+const vocabulary = vocabularyData.vocabulary.filter(v => v.lessonId === 6)
+  .map(item => ({
+    ...item,
+    audioSrc: `/audio/${item.quechua.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s/g, '_')}.mp3`
+  }));
 
 export default function LessonDetailPage({ params: { id } }: { params: { id: string } }) {
   return (

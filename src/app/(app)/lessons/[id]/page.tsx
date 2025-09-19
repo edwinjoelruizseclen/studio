@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Volume2, ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import vocabularyData from '@/lib/vocabulary.json';
 import { VocabularyClient } from '../vocabulary-client';
@@ -27,9 +27,14 @@ const lessonInfo = {
 export default function LessonDetailPage({ params: { id } }: { params: { id: string } }) {
   const lessonId = parseInt(id, 10);
   const info = lessonInfo[id as keyof typeof lessonInfo] || { title: 'Lección Desconocida', description: '' };
-  const vocabulary = vocabularyData.vocabulary.filter(
-    (v) => v.lessonId === lessonId
-  );
+  
+  const vocabulary = vocabularyData.vocabulary
+    .filter((v) => v.lessonId === lessonId)
+    .map(item => ({
+      ...item,
+      audioSrc: `/audio/${item.quechua.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s/g, '_')}.mp3`
+    }));
+
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">

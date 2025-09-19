@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Volume2, Loader2 } from 'lucide-react';
-import { getAudio } from './actions';
 import { useToast } from '@/hooks/use-toast';
 
 type VocabularyItem = {
@@ -10,44 +9,33 @@ type VocabularyItem = {
   lessonId: number | null;
   quechua: string;
   spanish: string;
+  audioSrc: string;
 };
 
 export function VocabularyClient({ vocabulary }: { vocabulary: VocabularyItem[] }) {
   const [playingId, setPlayingId] = useState<number | null>(null);
   const { toast } = useToast();
 
-  const handlePlayback = async (item: VocabularyItem) => {
-    if (playingId !== null) return; // Don't allow playing multiple sounds at once
-    
-    let audio: HTMLAudioElement | null = null;
-    try {
-      setPlayingId(item.id);
-      const audioDataUri = await getAudio(item.quechua);
-      
-      if (!audioDataUri) {
-        throw new Error('No se recibió audio.');
-      }
-      
-      audio = new Audio(audioDataUri);
-      audio.play();
+  const handlePlayback = (item: VocabularyItem) => {
+    if (playingId !== null) return;
 
-      audio.onended = () => {
-        setPlayingId(null);
-      };
-      
-      audio.onerror = () => {
-        throw new Error('Error al reproducir el audio.');
-      }
-      
-    } catch (error: any) {
-      console.error(error);
+    setPlayingId(item.id);
+    const audio = new Audio(item.audioSrc);
+    
+    audio.onerror = () => {
       toast({
         variant: 'destructive',
-        title: 'Error',
-        description: error.message || 'No se pudo reproducir el audio.',
+        title: 'Error de audio',
+        description: `No se pudo encontrar o reproducir el archivo de audio para "${item.quechua}".`,
       });
       setPlayingId(null);
-    }
+    };
+
+    audio.onended = () => {
+      setPlayingId(null);
+    };
+    
+    audio.play();
   };
   
   return (
@@ -66,6 +54,7 @@ export function VocabularyClient({ vocabulary }: { vocabulary: VocabularyItem[] 
             size="icon" 
             onClick={() => handlePlayback(item)}
             disabled={playingId !== null}
+            aria-label={`Escuchar ${item.quechua}`}
           >
             {playingId === item.id ? (
                 <Loader2 className="h-6 w-6 animate-spin" />

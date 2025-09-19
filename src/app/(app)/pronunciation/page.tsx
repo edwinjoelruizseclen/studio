@@ -6,50 +6,51 @@ import { useState, useRef, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import vocabularyData from '@/lib/vocabulary.json';
-import { getAudio } from '../lessons/actions';
 
-
-const phrases = vocabularyData.vocabulary
-  .sort((a, b) => a.id - b.id);
+const phrases = vocabularyData.vocabulary.map(item => ({
+  ...item,
+  audioSrc: `/audio/${item.quechua.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s/g, '_')}.mp3`
+})).sort((a, b) => a.id - b.id);
 
 
 function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
   const { toast } = useToast();
   const [isRecording, setIsRecording] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlayingUserAudio, setIsPlayingUserAudio] = useState(false);
+  const [isPlayingNativeAudio, setIsPlayingNativeAudio] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
-  const [isSynthesizing, setIsSynthesizing] = useState(false);
   
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const userAudioRef = useRef<HTMLAudioElement | null>(null);
   const nativeAudioRef = useRef<HTMLAudioElement | null>(null);
 
-  const handleNativePlayback = async () => {
-    // Don't play if something is already happening
-    if (isSynthesizing || isRecording || isPlaying) return;
-    
-    try {
-      setIsSynthesizing(true);
-      const audioDataUri = await getAudio(phrase.quechua);
-      if (!audioDataUri) {
-        throw new Error('No se pudo generar el audio.');
-      }
-      
-      const audio = new Audio(audioDataUri);
-      nativeAudioRef.current = audio;
+  const handleNativePlayback = () => {
+    if (isPlayingNativeAudio || isRecording || isPlayingUserAudio) return;
+
+    const audio = nativeAudioRef.current;
+    if (audio) {
+      audio.currentTime = 0;
       audio.play();
-
-      audio.onended = () => setIsSynthesizing(false);
-      audio.onerror = () => {
-        setIsSynthesizing(false);
-        toast({ variant: 'destructive', title: 'Error', description: 'No se pudo reproducir el audio.' });
-      };
-
-    } catch (error: any) {
-        setIsSynthesizing(false);
-        toast({ variant: 'destructive', title: 'Error', description: error.message || 'No se pudo reproducir el audio.' });
     }
   };
+
+  useEffect(() => {
+    // Pre-load native audio
+    const audio = new Audio(phrase.audioSrc);
+    audio.onplay = () => setIsPlayingNativeAudio(true);
+    audio.onpause = () => setIsPlayingNativeAudio(false);
+    audio.onended = () => setIsPlayingNativeAudio(false);
+    audio.onerror = () => {
+      toast({ variant: 'destructive', title: 'Error de Audio', description: 'No se pudo cargar el audio nativo.' });
+      setIsPlayingNativeAudio(false);
+    };
+    nativeAudioRef.current = audio;
+
+    return () => {
+      audio.pause();
+      nativeAudioRef.current = null;
+    }
+  }, [phrase.audioSrc, toast]);
 
 
   const handleRecord = async () => {
@@ -59,11 +60,10 @@ function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
       return;
     }
 
-    // Stop any other audio before recording
     if (nativeAudioRef.current) nativeAudioRef.current.pause();
-    if (audioRef.current) audioRef.current.pause();
-    setIsPlaying(false);
-    setIsSynthesizing(false);
+    if (userAudioRef.current) userAudioRef.current.pause();
+    setIsPlayingUserAudio(false);
+    setIsPlayingNativeAudio(false);
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -95,12 +95,12 @@ function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
   };
   
   const handleUserPlayback = () => {
-    if (audioRef.current) {
-        if(isPlaying) {
-            audioRef.current.pause(); // onpause event will set isPlaying to false
+    if (userAudioRef.current) {
+        if(isPlayingUserAudio) {
+            userAudioRef.current.pause();
         } else {
-            audioRef.current.currentTime = 0;
-            audioRef.current.play(); // onplay event will set isPlaying to true
+            userAudioRef.current.currentTime = 0;
+            userAudioRef.current.play();
         }
     }
   };
@@ -108,19 +108,15 @@ function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
   useEffect(() => {
     if (audioUrl) {
       const audio = new Audio(audioUrl);
-      audio.onplay = () => setIsPlaying(true);
-      audio.onpause = () => setIsPlaying(false);
-      audio.onended = () => setIsPlaying(false);
-      audioRef.current = audio;
+      audio.onplay = () => setIsPlayingUserAudio(true);
+      audio.onpause = () => setIsPlayingUserAudio(false);
+      audio.onended = () => setIsPlayingUserAudio(false);
+      userAudioRef.current = audio;
     }
     
     return () => {
-        // Cleanup function
-        if (audioRef.current) {
-            URL.revokeObjectURL(audioRef.current.src);
-        }
-        if (nativeAudioRef.current) {
-            nativeAudioRef.current.pause();
+        if (userAudioRef.current) {
+            URL.revokeObjectURL(userAudioRef.current.src);
         }
     };
   }, [audioUrl]);
@@ -139,27 +135,27 @@ function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
             size="icon"
             aria-label="Escuchar pronunciación nativa"
             onClick={handleNativePlayback}
-            disabled={isSynthesizing || isRecording || isPlaying}
+            disabled={isPlayingNativeAudio || isRecording || isPlayingUserAudio}
           >
-             {isSynthesizing ? <Loader2 className="h-5 w-5 animate-spin" /> : <Volume2 className="h-5 w-5" />}
+             {isPlayingNativeAudio ? <Loader2 className="h-5 w-5 animate-spin" /> : <Volume2 className="h-5 w-5" />}
           </Button>
           <Button
             variant={isRecording ? 'destructive' : 'secondary'}
             size="icon"
             aria-label={isRecording ? 'Detener grabación' : 'Empezar a grabar'}
             onClick={handleRecord}
-            disabled={isSynthesizing || isPlaying}
+            disabled={isPlayingNativeAudio || isPlayingUserAudio}
           >
             <Mic className="h-5 w-5" />
           </Button>
           <Button 
             variant="outline" 
             size="icon" 
-            disabled={!audioUrl || isRecording || isSynthesizing} 
+            disabled={!audioUrl || isRecording || isPlayingNativeAudio} 
             aria-label="Reproducir tu grabación"
             onClick={handleUserPlayback}
             >
-            {isPlaying ? (
+            {isPlayingUserAudio ? (
               <Pause className="h-5 w-5" />
             ) : (
               <Play className={cn("h-5 w-5", !audioUrl && "text-muted-foreground")} />

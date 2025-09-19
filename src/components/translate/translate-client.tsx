@@ -8,19 +8,28 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { getTranslation, FormState } from '@/app/(app)/translate/actions';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Sparkles, ArrowRightLeft } from 'lucide-react';
+import { Loader2, Sparkles, ArrowRightLeft, WifiOff } from 'lucide-react';
 
 const initialState: FormState = {
   message: '',
 };
 
-function SubmitButton() {
+function SubmitButton({ isOnline }: { isOnline: boolean }) {
   const { pending } = useFormStatus();
+  
+  if (!isOnline) {
+    return (
+      <Button disabled className="w-full">
+        <WifiOff className="mr-2 h-4 w-4" />
+        Traductor no disponible sin conexión
+      </Button>
+    )
+  }
+
   return (
     <Button type="submit" disabled={pending} className="w-full">
       {pending ? (
@@ -41,6 +50,25 @@ function SubmitButton() {
 export function TranslateClient() {
   const [state, formAction] = useFormState(getTranslation, initialState);
   const { toast } = useToast();
+  const [isOnline, setIsOnline] = useState(true);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    
+    // Set initial state
+    if (typeof navigator !== 'undefined') {
+      setIsOnline(navigator.onLine);
+    }
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
   useEffect(() => {
     if (state.message && state.message !== '¡Éxito!') {
@@ -67,6 +95,7 @@ export function TranslateClient() {
               rows={8}
               required
               className="border-0 p-0 text-lg focus-visible:ring-0"
+              disabled={!isOnline}
             />
           </CardContent>
         </Card>
@@ -94,7 +123,7 @@ export function TranslateClient() {
         </div>
         
         <div className="col-span-1 mt-4 md:col-span-2">
-          <SubmitButton />
+          <SubmitButton isOnline={isOnline} />
         </div>
          {state.errors?.text && (
             <p className="col-span-1 text-sm text-destructive md:col-span-2">
