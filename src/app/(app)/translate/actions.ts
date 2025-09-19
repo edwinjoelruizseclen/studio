@@ -1,45 +1,42 @@
 'use server';
 
 import {
-  quechuaTranslationAssistance,
-  QuechuaTranslationAssistanceInput,
-  QuechuaTranslationAssistanceOutput,
-} from '@/ai/flows/quechua-translation-assistance';
+  simpleTranslator,
+  SimpleTranslatorInput,
+  SimpleTranslatorOutput,
+} from '@/ai/flows/simple-translator';
 import { z } from 'zod';
 
 const FormSchema = z.object({
-  sentence: z.string().min(10, 'Por favor, introduce una frase más larga.'),
-  wordOrPhrase: z.string().min(1, 'Por favor, introduce una palabra o frase para definir.'),
+  text: z.string().min(1, 'Por favor, introduce texto para traducir.'),
 });
 
 export type FormState = {
   message: string;
-  data?: QuechuaTranslationAssistanceOutput;
+  data?: SimpleTranslatorOutput;
   errors?: {
-    sentence?: string[];
-    wordOrPhrase?: string[];
+    text?: string[];
   };
 };
 
-export async function getTranslationAssistance(
+export async function getTranslation(
   prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
   const validatedFields = FormSchema.safeParse({
-    sentence: formData.get('sentence'),
-    wordOrPhrase: formData.get('wordOrPhrase'),
+    text: formData.get('text'),
   });
 
   if (!validatedFields.success) {
     return {
-      message: 'La validación falló. Por favor, revisa tus entradas.',
+      message: 'La validación falló.',
       errors: validatedFields.error.flatten().fieldErrors,
     };
   }
 
   try {
-    const result = await quechuaTranslationAssistance(
-      validatedFields.data as QuechuaTranslationAssistanceInput
+    const result = await simpleTranslator(
+      validatedFields.data as SimpleTranslatorInput
     );
     return {
       message: '¡Éxito!',
