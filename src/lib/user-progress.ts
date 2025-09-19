@@ -23,7 +23,7 @@ export async function getLocalUserProgress(): Promise<LessonProgress> {
     console.error("Could not parse lesson progress from localStorage", e);
   }
   // Default progress for a new user
-  return { '1': 50, '2': 60 };
+  return {};
 }
 
 /**
@@ -37,8 +37,8 @@ export async function updateLocalUserProgress(
 ): Promise<void> {
     try {
       if (typeof window !== 'undefined') {
-        const savedProgress = window.localStorage.getItem(LOCAL_STORAGE_KEY);
-        const currentProgress = savedProgress ? JSON.parse(savedProgress) : {};
+        const savedProgress = await getLocalUserProgress();
+        const currentProgress = savedProgress || {};
         currentProgress[String(lessonId)] = progress;
         window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(currentProgress));
       }

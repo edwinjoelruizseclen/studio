@@ -18,7 +18,7 @@ import {
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { getLocalUserProgress, updateLocalUserProgress } from '@/lib/user-progress';
+import { getLocalUserProgress } from '@/lib/user-progress';
 
 const initialLessons = [
   { id: 1, title: 'Lección 1: Saludos y Presentaciones', progress: 0 },
@@ -53,7 +53,7 @@ export default function DashboardPage() {
         
         setLessons(updatedLessons);
         setLessonsCompleted(completedCount);
-        const overallProgress = updatedLessons.reduce((sum, l) => sum + l.progress, 0) / updatedLessons.length;
+        const overallProgress = updatedLessons.length > 0 ? updatedLessons.reduce((sum, l) => sum + l.progress, 0) / updatedLessons.length : 0;
         setTotalProgress(overallProgress);
 
       } catch (error) {
@@ -102,9 +102,9 @@ export default function DashboardPage() {
             <Flame className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">5 Días</div>
+            <div className="text-2xl font-bold">0 Días</div>
             <p className="text-xs text-muted-foreground">
-              ¡Sigue así para no perder tu racha!
+              ¡Completa una lección para empezar tu racha!
             </p>
           </CardContent>
         </Card>

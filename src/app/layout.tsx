@@ -39,8 +39,8 @@ export default function RootLayout({
         <meta name="theme-color" content="#FFFFFF" />
       </head>
       <body className={cn('min-h-screen font-body antialiased')}>
-          {children}
-          <Toaster />
+        {children}
+        <Toaster />
       </body>
     </html>
   );
