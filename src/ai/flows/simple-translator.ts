@@ -8,14 +8,14 @@
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { z } from 'zod';
 
-export const SimpleTranslatorInputSchema = z.object({
+const SimpleTranslatorInputSchema = z.object({
   text: z.string().describe('The text to be translated, can be in Spanish or Quechua.'),
 });
 export type SimpleTranslatorInput = z.infer<typeof SimpleTranslatorInputSchema>;
 
-export const SimpleTranslatorOutputSchema = z.object({
+const SimpleTranslatorOutputSchema = z.object({
   translation: z.string().describe('The translated text.'),
 });
 export type SimpleTranslatorOutput = z.infer<typeof SimpleTranslatorOutputSchema>;
