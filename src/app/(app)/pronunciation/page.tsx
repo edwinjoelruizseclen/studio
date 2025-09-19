@@ -10,7 +10,6 @@ import { getAudio } from '../lessons/actions';
 
 
 const phrases = vocabularyData.vocabulary
-  .filter(v => v.lessonId === 1 || v.lessonId === null)
   .sort((a, b) => a.id - b.id);
 
 
@@ -26,7 +25,8 @@ function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
   const nativeAudioRef = useRef<HTMLAudioElement | null>(null);
 
   const handleNativePlayback = async () => {
-    if (isSynthesizing) return;
+    // Don't play if something is already happening
+    if (isSynthesizing || isRecording || isPlaying) return;
     
     try {
       setIsSynthesizing(true);
@@ -58,6 +58,12 @@ function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
       setIsRecording(false);
       return;
     }
+
+    // Stop any other audio before recording
+    if (nativeAudioRef.current) nativeAudioRef.current.pause();
+    if (audioRef.current) audioRef.current.pause();
+    setIsPlaying(false);
+    setIsSynthesizing(false);
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -91,9 +97,10 @@ function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
   const handleUserPlayback = () => {
     if (audioRef.current) {
         if(isPlaying) {
-            audioRef.current.pause();
+            audioRef.current.pause(); // onpause event will set isPlaying to false
         } else {
-            audioRef.current.play();
+            audioRef.current.currentTime = 0;
+            audioRef.current.play(); // onplay event will set isPlaying to true
         }
     }
   };
@@ -108,14 +115,12 @@ function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
     }
     
     return () => {
+        // Cleanup function
         if (audioRef.current) {
-            audioRef.current.pause();
+            URL.revokeObjectURL(audioRef.current.src);
         }
         if (nativeAudioRef.current) {
             nativeAudioRef.current.pause();
-        }
-        if (audioUrl) {
-            URL.revokeObjectURL(audioUrl);
         }
     };
   }, [audioUrl]);
@@ -134,7 +139,7 @@ function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
             size="icon"
             aria-label="Escuchar pronunciación nativa"
             onClick={handleNativePlayback}
-            disabled={isSynthesizing || isRecording}
+            disabled={isSynthesizing || isRecording || isPlaying}
           >
              {isSynthesizing ? <Loader2 className="h-5 w-5 animate-spin" /> : <Volume2 className="h-5 w-5" />}
           </Button>
@@ -143,7 +148,7 @@ function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
             size="icon"
             aria-label={isRecording ? 'Detener grabación' : 'Empezar a grabar'}
             onClick={handleRecord}
-            disabled={isSynthesizing}
+            disabled={isSynthesizing || isPlaying}
           >
             <Mic className="h-5 w-5" />
           </Button>

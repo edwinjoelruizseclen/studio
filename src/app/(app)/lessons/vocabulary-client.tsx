@@ -17,7 +17,7 @@ export function VocabularyClient({ vocabulary }: { vocabulary: VocabularyItem[] 
   const { toast } = useToast();
 
   const handlePlayback = async (item: VocabularyItem) => {
-    if (playingId === item.id) return;
+    if (playingId !== null) return; // Don't allow playing multiple sounds at once
     
     let audio: HTMLAudioElement | null = null;
     try {
@@ -54,7 +54,7 @@ export function VocabularyClient({ vocabulary }: { vocabulary: VocabularyItem[] 
     <div className="space-y-4">
       {vocabulary.map((item) => (
         <div
-          key={item.quechua}
+          key={item.id}
           className="flex items-center justify-between rounded-md bg-background p-3 hover:bg-accent/10"
         >
           <div>
@@ -65,7 +65,7 @@ export function VocabularyClient({ vocabulary }: { vocabulary: VocabularyItem[] 
             variant="ghost" 
             size="icon" 
             onClick={() => handlePlayback(item)}
-            disabled={playingId !== null}
+            disabled={playingId !== null && playingId !== item.id}
           >
             {playingId === item.id ? (
                 <Loader2 className="h-6 w-6 animate-spin" />
