@@ -9,7 +9,7 @@ import vocabularyData from '@/lib/vocabulary.json';
 
 const phrases = vocabularyData.vocabulary.map(item => ({
   ...item,
-  audioSrc: `/audio/${item.quechua.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s/g, '_')}.mp3`
+  audioSrc: `/audio/${item.quechua.toLowerCase().replace(/[^a-z0-9\\s]/g, '').replace(/\\s/g, '_')}.mp3`
 })).sort((a, b) => a.id - b.id);
 
 

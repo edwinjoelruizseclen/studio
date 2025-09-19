@@ -32,7 +32,7 @@ export default function LessonDetailPage({ params: { id } }: { params: { id: str
     .filter((v) => v.lessonId === lessonId)
     .map(item => ({
       ...item,
-      audioSrc: `/audio/${item.quechua.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s/g, '_')}.mp3`
+      audioSrc: `/audio/${item.quechua.toLowerCase().replace(/[^a-z0-9\\s]/g, '').replace(/\\s/g, '_')}.mp3`
     }));
 
 

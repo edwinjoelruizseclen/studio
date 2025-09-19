@@ -8,7 +8,7 @@ import { VocabularyClient } from '../vocabulary-client';
 const vocabulary = vocabularyData.vocabulary.filter(v => v.lessonId === 4)
   .map(item => ({
     ...item,
-    audioSrc: `/audio/${item.quechua.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s/g, '_')}.mp3`
+    audioSrc: `/audio/${item.quechua.toLowerCase().replace(/[^a-z0-9\\s]/g, '').replace(/\\s/g, '_')}.mp3`
   }));
 
 export default function LessonDetailPage({ params: { id } }: { params: { id: string } }) {
@@ -22,7 +22,7 @@ export default function LessonDetailPage({ params: { id } }: { params: { id: str
         Volver a Lecciones
       </Link>
       <h1 className="mb-2 font-headline text-3xl font-bold">
-        Lección {id}: Miembros de la Familia
+        Lección 4: Miembros de la Familia
       </h1>
       <p className="mb-8 text-muted-foreground">
         Aprende cómo referirte a los miembros de tu familia.
