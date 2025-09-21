@@ -10,6 +10,17 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
+/**
+ * @typedef {object} NavItem
+ * @property {string} href - La ruta de la página.
+ * @property {string} label - El texto a mostrar para el enlace.
+ * @property {React.ElementType} icon - El componente de ícono para el enlace.
+ */
+
+/**
+ * Define los elementos de navegación para la barra inferior.
+ * @type {NavItem[]}
+ */
 const navItems = [
   { href: '/dashboard', label: 'Aprender', icon: Home },
   { href: '/lessons', label: 'Lecciones', icon: BookOpen },
@@ -17,6 +28,9 @@ const navItems = [
   { href: '/pronunciation', label: 'Práctica', icon: Mic },
 ];
 
+/**
+ * Componente de barra de navegación inferior que se muestra solo en dispositivos móviles.
+ */
 export default function BottomNav() {
   const pathname = usePathname();
 
@@ -24,6 +38,7 @@ export default function BottomNav() {
     <nav className="fixed bottom-0 left-0 right-0 z-40 border-t bg-card md:hidden">
       <div className="grid h-16 grid-cols-4">
         {navItems.map((item) => {
+          // Determina si el enlace actual está activo.
           const isActive = pathname.startsWith(item.href);
           return (
             <Link
@@ -32,8 +47,8 @@ export default function BottomNav() {
               className={cn(
                 'flex flex-col items-center justify-center gap-1 text-xs font-medium transition-colors',
                 isActive
-                  ? 'text-primary'
-                  : 'text-muted-foreground hover:text-foreground'
+                  ? 'text-primary' // Estilo para enlace activo
+                  : 'text-muted-foreground hover:text-foreground' // Estilo para enlace inactivo
               )}
             >
               <item.icon className="h-5 w-5" />

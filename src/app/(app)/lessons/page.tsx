@@ -7,6 +7,9 @@ import { ArrowRight, Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { getLocalUserProgress } from '@/lib/user-progress';
 
+/**
+ * Estructura de datos que define las lecciones agrupadas por categoría.
+ */
 const lessonCategoriesData = [
   {
     category: 'Módulo Principiante',
@@ -73,11 +76,19 @@ const lessonCategoriesData = [
   }
 ];
 
+/**
+ * Página que muestra todas las lecciones disponibles, agrupadas por módulo.
+ * Carga y muestra el progreso del usuario para cada lección.
+ */
 export default function LessonsPage() {
   const [lessonCategories, setLessonCategories] = useState(lessonCategoriesData);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    /**
+     * Carga el progreso del usuario desde el almacenamiento local y
+     * actualiza el estado de las lecciones.
+     */
     async function loadProgress() {
       setIsLoading(true);
       try {
@@ -100,6 +111,7 @@ export default function LessonsPage() {
     loadProgress();
   }, []);
 
+  // Muestra un indicador de carga mientras se obtienen los datos de progreso.
   if (isLoading) {
     return (
       <div className="flex h-full w-full items-center justify-center">

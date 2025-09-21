@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, CheckCircle, Lightbulb, RefreshCw, XCircle } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Lightbulb, XCircle } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
@@ -13,6 +13,11 @@ import vocabularyData from '@/lib/vocabulary.json';
 import { useParams } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 
+/**
+ * Baraja las letras de una palabra.
+ * @param {string} word - La palabra a barajar.
+ * @returns {string} La palabra con sus letras en orden aleatorio.
+ */
 const shuffle = (word: string) => {
     const a = word.split('');
     const n = a.length;
@@ -22,14 +27,20 @@ const shuffle = (word: string) => {
         [a[i], a[j]] = [a[j], a[i]];
     }
     const shuffled = a.join('');
-    // Ensure the shuffled word is not the same as the original
+    // Se asegura de que la palabra barajada no sea igual a la original.
     if(shuffled === word) return shuffle(word);
     return shuffled;
 };
 
+/**
+ * Componente para el juego "Palabra Revuelta".
+ * El usuario debe ordenar las letras para formar la palabra correcta en quechua.
+ */
 export default function ScrambleGame() {
   const params = useParams();
   const lessonId = parseInt(params.lessonId as string, 10);
+  
+  // Prepara las preguntas barajando las palabras del vocabulario de la lección.
   const [questions, setQuestions] = useState(() => vocabularyData.vocabulary
     .filter((v) => v.lessonId === lessonId)
     .map(({ quechua, spanish }) => ({ word: quechua, hint: spanish, scrambled: shuffle(quechua) }))
@@ -46,6 +57,9 @@ export default function ScrambleGame() {
   const isFinished = currentQuestionIndex === questions.length;
   const currentQuestion = questions[currentQuestionIndex];
 
+  /**
+   * Comprueba si la respuesta introducida por el usuario es correcta.
+   */
   const handleCheck = () => {
     if (showFeedback) return;
 
@@ -58,6 +72,9 @@ export default function ScrambleGame() {
     }
   };
 
+  /**
+   * Avanza a la siguiente pregunta.
+   */
   const handleNext = useCallback(() => {
     if (currentQuestionIndex < questions.length) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -67,6 +84,9 @@ export default function ScrambleGame() {
     }
   }, [currentQuestionIndex, questions.length]);
 
+  /**
+   * Reinicia el juego, barajando las palabras de nuevo.
+   */
   const resetGame = () => {
     setQuestions(prev => prev.map(q => ({...q, scrambled: shuffle(q.word) })));
     setCurrentQuestionIndex(0);
@@ -76,6 +96,7 @@ export default function ScrambleGame() {
     setShowFeedback(false);
   };
   
+  // Efecto que se ejecuta al finalizar el juego para guardar el progreso.
   useEffect(() => {
     async function handleGameFinish() {
       if (isFinished && questions.length > 0) {
@@ -98,6 +119,7 @@ export default function ScrambleGame() {
     handleGameFinish();
   }, [isFinished, toast, lessonId, questions.length]);
 
+  // Si no hay vocabulario para esta lección, muestra un mensaje.
   if (questions.length === 0) {
     return (
       <div className="container mx-auto flex flex-col items-center p-4 md:p-6 lg:p-8">
@@ -129,6 +151,7 @@ export default function ScrambleGame() {
       </div>
 
       {isFinished ? (
+        // Vista de finalización del juego
         <Card className="w-full max-w-md p-8 text-center">
           <CheckCircle className="mx-auto mb-4 h-16 w-16 text-primary" />
           <h2 className="text-2xl font-bold">¡Juego Completado!</h2>
@@ -138,6 +161,7 @@ export default function ScrambleGame() {
           <Button onClick={resetGame}>Jugar de Nuevo</Button>
         </Card>
       ) : (
+        // Vista de la pregunta actual
         <Card className="w-full max-w-2xl p-6">
           <p className="mb-2 text-center text-sm text-muted-foreground">Pista: {currentQuestion.hint}</p>
           <p className="mb-8 text-center text-4xl font-bold tracking-widest">
@@ -158,6 +182,7 @@ export default function ScrambleGame() {
             </Button>
           </div>
 
+          {/* Feedback después de responder */}
           {showFeedback && (
             <div className={cn('mt-6 rounded-lg p-4 text-center text-lg font-semibold', isCorrect ? 'bg-primary/10 text-primary' : 'bg-destructive/10 text-destructive')}>
               {isCorrect ? (

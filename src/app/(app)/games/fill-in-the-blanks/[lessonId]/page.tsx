@@ -11,6 +11,19 @@ import { updateLocalUserProgress } from '@/lib/user-progress';
 import { useToast } from '@/hooks/use-toast';
 import { useParams } from 'next/navigation';
 
+/**
+ * @typedef {object} Question
+ * @property {number} lessonId - ID de la lección a la que pertenece la pregunta.
+ * @property {string} sentence - La oración con un espacio en blanco (`__`).
+ * @property {string[]} options - Las posibles respuestas para el espacio en blanco.
+ * @property {string} answer - La respuesta correcta.
+ * @property {string} translation - La traducción al español de la oración completa.
+ */
+
+/**
+ * Array con todas las preguntas para el juego de rellenar huecos.
+ * @type {Question[]}
+ */
 const allQuestions = [
   {
     lessonId: 3,
@@ -49,9 +62,15 @@ const allQuestions = [
   },
 ];
 
+/**
+ * Componente para el juego "Rellena los Huecos".
+ * El usuario debe elegir la palabra correcta para completar una oración.
+ */
 export default function FillInTheBlanksGame() {
   const params = useParams();
   const lessonId = parseInt(params.lessonId as string, 10);
+  
+  // Filtra las preguntas para la lección actual.
   const [questions, setQuestions] = useState(() => allQuestions.filter(q => q.lessonId === lessonId));
   
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -65,6 +84,10 @@ export default function FillInTheBlanksGame() {
   const isFinished = currentQuestionIndex === questions.length;
   const currentQuestion = questions[currentQuestionIndex];
 
+  /**
+   * Maneja el clic en una opción de respuesta.
+   * @param {string} option - La opción seleccionada por el usuario.
+   */
   const handleOptionClick = (option: string) => {
     if (showFeedback) return;
 
@@ -79,6 +102,9 @@ export default function FillInTheBlanksGame() {
     }
   };
 
+  /**
+   * Avanza a la siguiente pregunta.
+   */
   const handleNext = useCallback(() => {
     if (currentQuestionIndex < questions.length) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -88,6 +114,9 @@ export default function FillInTheBlanksGame() {
     }
   }, [currentQuestionIndex, questions.length]);
   
+  /**
+   * Reinicia el juego al estado inicial.
+   */
   const resetGame = () => {
     setCurrentQuestionIndex(0);
     setSelectedOption(null);
@@ -96,7 +125,12 @@ export default function FillInTheBlanksGame() {
     setShowFeedback(false);
   }
 
+  // Efecto que se ejecuta cuando el juego termina para guardar el progreso.
   useEffect(() => {
+    /**
+     * Si el juego ha finalizado, actualiza el progreso del usuario al 100%
+     * para esta lección y muestra una notificación.
+     */
     async function handleGameFinish() {
       if (isFinished && questions.length > 0) {
           try {
@@ -119,6 +153,7 @@ export default function FillInTheBlanksGame() {
     handleGameFinish();
   }, [isFinished, toast, lessonId, questions.length]);
 
+  // Si no hay preguntas para esta lección, muestra un mensaje.
   if (questions.length === 0) {
     return (
       <div className="container mx-auto flex flex-col items-center p-4 md:p-6 lg:p-8">
@@ -155,6 +190,7 @@ export default function FillInTheBlanksGame() {
       </div>
 
       {isFinished ? (
+        // Vista de finalización del juego
         <Card className="w-full max-w-md p-8 text-center">
           <CheckCircle className="mx-auto mb-4 h-16 w-16 text-primary" />
           <h2 className="text-2xl font-bold">¡Juego Completado!</h2>
@@ -164,6 +200,7 @@ export default function FillInTheBlanksGame() {
           <Button onClick={resetGame}>Jugar de Nuevo</Button>
         </Card>
       ) : (
+        // Vista de la pregunta actual
         <Card className="w-full max-w-2xl p-6">
           <p className="mb-8 text-center text-2xl font-semibold">
             {currentQuestion.sentence.replace('__', '____')}
@@ -185,6 +222,7 @@ export default function FillInTheBlanksGame() {
             ))}
           </div>
 
+          {/* Feedback después de responder */}
           {showFeedback && (
             <div
               className={cn(

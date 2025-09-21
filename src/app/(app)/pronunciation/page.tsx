@@ -7,11 +7,17 @@ import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import vocabularyData from '@/lib/vocabulary.json';
 
+// Carga y ordena todas las frases del vocabulario.
 const phrases = vocabularyData.vocabulary.map(item => ({
   ...item
 })).sort((a, b) => a.id - b.id);
 
 
+/**
+ * Componente para una tarjeta de práctica de pronunciación individual.
+ * @param {object} props
+ * @param {object} props.phrase - El objeto de la frase/palabra a practicar.
+ */
 function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
   const { toast } = useToast();
   const [isRecording, setIsRecording] = useState(false);
@@ -23,6 +29,7 @@ function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const userAudioRef = useRef<HTMLAudioElement | null>(null);
 
+  // Comprueba la compatibilidad con la API de Síntesis de Voz.
   useEffect(() => {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       setIsSynthesisSupported(true);
@@ -31,6 +38,9 @@ function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
     }
   }, []);
 
+  /**
+   * Reproduce la pronunciación nativa (sintetizada) de la frase.
+   */
   const handleNativePlayback = () => {
     if (isPlayingNativeAudio || isRecording || isPlayingUserAudio || !isSynthesisSupported) return;
 
@@ -58,7 +68,9 @@ function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
     }
   };
 
-
+  /**
+   * Inicia o detiene la grabación del audio del usuario.
+   */
   const handleRecord = async () => {
     if (isRecording) {
       mediaRecorderRef.current?.stop();
@@ -66,6 +78,7 @@ function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
       return;
     }
     
+    // Detiene cualquier otra reproducción de audio.
     window.speechSynthesis.cancel();
     if (userAudioRef.current) userAudioRef.current.pause();
     setIsPlayingUserAudio(false);
@@ -85,6 +98,7 @@ function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
         const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
         const url = URL.createObjectURL(audioBlob);
         setAudioUrl(url);
+        // Detiene los tracks del micrófono para que el indicador del navegador desaparezca.
         stream.getTracks().forEach(track => track.stop());
       };
 
@@ -100,6 +114,9 @@ function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
     }
   };
   
+  /**
+   * Reproduce o pausa la grabación del usuario.
+   */
   const handleUserPlayback = () => {
     if (userAudioRef.current) {
         if(isPlayingUserAudio) {
@@ -111,6 +128,7 @@ function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
     }
   };
 
+  // Efecto para crear y limpiar el objeto de audio del usuario.
   useEffect(() => {
     if (audioUrl) {
       const audio = new Audio(audioUrl);
@@ -136,6 +154,7 @@ function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
           <p className="text-muted-foreground">{phrase.spanish}</p>
         </div>
         <div className="flex items-center gap-2">
+          {/* Botón para escuchar la pronunciación nativa */}
           <Button
             variant="outline"
             size="icon"
@@ -145,6 +164,7 @@ function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
           >
              {isPlayingNativeAudio ? <Loader2 className="h-5 w-5 animate-spin" /> : <Volume2 className="h-5 w-5" />}
           </Button>
+          {/* Botón para grabar */}
           <Button
             variant={isRecording ? 'destructive' : 'secondary'}
             size="icon"
@@ -154,6 +174,7 @@ function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
           >
             <Mic className="h-5 w-5" />
           </Button>
+          {/* Botón para reproducir la grabación del usuario */}
           <Button 
             variant="outline" 
             size="icon" 
@@ -173,9 +194,14 @@ function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
   );
 }
 
+/**
+ * Página principal para la práctica de pronunciación.
+ * Muestra una lista de frases para que el usuario practique.
+ */
 export default function PronunciationPage() {
   const [isMounted, setIsMounted] = useState(false);
 
+  // Evita problemas de hidratación asegurándose de que el componente se renderice solo en el cliente.
   useEffect(() => {
     setIsMounted(true);
   }, []);

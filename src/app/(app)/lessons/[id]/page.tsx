@@ -6,6 +6,10 @@ import vocabularyData from '@/lib/vocabulary.json';
 import { VocabularyClient } from '../vocabulary-client';
 import { notFound } from 'next/navigation';
 
+/**
+ * Información estática sobre cada lección (título y descripción).
+ * La clave es el ID de la lección.
+ */
 const lessonInfo = {
   '1': {
     title: 'Saludos y Presentaciones',
@@ -41,15 +45,24 @@ const lessonInfo = {
   }
 };
 
+/**
+ * Página de detalle de una lección específica.
+ * Muestra el título, descripción y vocabulario de la lección.
+ * @param {object} props
+ * @param {object} props.params - Parámetros de la URL.
+ * @param {string} props.params.id - El ID de la lección.
+ */
 export default function LessonDetailPage({ params }: { params: { id: string } }) {
   const lessonId = parseInt(params.id, 10);
   const infoKey = params.id as keyof typeof lessonInfo;
   
+  // Si la información de la lección no existe, muestra la página 404.
   if (!lessonInfo[infoKey]) {
     notFound();
   }
   const info = lessonInfo[infoKey];
   
+  // Filtra el vocabulario correspondiente a esta lección.
   const vocabulary = vocabularyData.vocabulary.filter((v) => v.lessonId === lessonId);
 
 
@@ -72,10 +85,12 @@ export default function LessonDetailPage({ params }: { params: { id: string } })
           <CardTitle>Vocabulario</CardTitle>
         </CardHeader>
         <CardContent>
+            {/* Componente de cliente para manejar la interactividad del vocabulario */}
             <VocabularyClient vocabulary={vocabulary} />
         </CardContent>
       </Card>
 
+      {/* Navegación a la lección anterior y siguiente */}
       <div className="mt-8 flex justify-between">
         {lessonId > 1 ? (
           <Link href={`/lessons/${lessonId - 1}`}>
@@ -84,7 +99,7 @@ export default function LessonDetailPage({ params }: { params: { id: string } })
             </Button>
           </Link>
         ) : (
-          <div></div>
+          <div></div> // Espaciador para mantener el botón de siguiente a la derecha
         )}
         {lessonId < 8 ? (
           <Link href={`/lessons/${lessonId + 1}`}>

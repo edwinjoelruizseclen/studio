@@ -4,6 +4,13 @@ import { Button } from '@/components/ui/button';
 import { Volume2, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
+/**
+ * @typedef {object} VocabularyItem
+ * @property {number} id - Identificador único del item.
+ * @property {number | null} lessonId - ID de la lección a la que pertenece.
+ * @property {string} quechua - La palabra en quechua.
+ * @property {string} spanish - La traducción al español.
+ */
 type VocabularyItem = {
   id: number;
   lessonId: number | null;
@@ -11,11 +18,18 @@ type VocabularyItem = {
   spanish: string;
 };
 
+/**
+ * Componente de cliente que renderiza una lista de vocabulario
+ * y maneja la reproducción de audio usando la API de Síntesis de Voz del navegador.
+ * @param {object} props
+ * @param {VocabularyItem[]} props.vocabulary - Array de items de vocabulario a mostrar.
+ */
 export function VocabularyClient({ vocabulary }: { vocabulary: VocabularyItem[] }) {
   const [playingId, setPlayingId] = useState<number | null>(null);
   const [isSupported, setIsSupported] = useState(true);
   const { toast } = useToast();
 
+  // Comprueba si el navegador soporta la API de Síntesis de Voz al montar el componente.
   useEffect(() => {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       setIsSupported(true);
@@ -29,26 +43,34 @@ export function VocabularyClient({ vocabulary }: { vocabulary: VocabularyItem[] 
     }
   }, [toast]);
 
+  /**
+   * Maneja la reproducción del audio de un item de vocabulario.
+   * @param {VocabularyItem} item - El item de vocabulario a reproducir.
+   */
   const handlePlayback = (item: VocabularyItem) => {
     if (playingId !== null || !isSupported) return;
 
     try {
       setPlayingId(item.id);
       
+      // Crea un nuevo objeto de síntesis de voz.
       const utterance = new SpeechSynthesisUtterance(item.quechua);
       
-      // Attempt to find a Spanish voice for better phonetic pronunciation
+      // Intenta encontrar una voz en español para una pronunciación fonética más precisa,
+      // ya que no hay voces nativas de quechua en los navegadores.
       const voices = window.speechSynthesis.getVoices();
       const spanishVoice = voices.find(voice => voice.lang.startsWith('es'));
       if (spanishVoice) {
         utterance.voice = spanishVoice;
       }
-      utterance.lang = 'es-US'; // Fallback language
+      utterance.lang = 'es-US'; // Lenguaje de fallback.
       
+      // Se ejecuta cuando la reproducción termina.
       utterance.onend = () => {
         setPlayingId(null);
       };
       
+      // Se ejecuta si hay un error.
       utterance.onerror = (event) => {
         console.error('SpeechSynthesisUtterance.onerror', event);
         toast({
@@ -59,6 +81,7 @@ export function VocabularyClient({ vocabulary }: { vocabulary: VocabularyItem[] 
         setPlayingId(null);
       };
 
+      // Inicia la reproducción.
       window.speechSynthesis.speak(utterance);
 
     } catch (error) {

@@ -7,13 +7,19 @@ import { AndeanCrossIcon } from '@/components/icons/andean-cross';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Link from 'next/link';
 
+/**
+ * Página de inicio (Landing Page) de la aplicación.
+ * Presenta la marca y un llamado a la acción para comenzar a aprender.
+ */
 export default function Home() {
+  // Busca la imagen de fondo en los datos de imágenes de marcador de posición.
   const bgImage = PlaceHolderImages.find(
     (img) => img.id === 'andean-landscape'
   );
 
   return (
     <div className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-background">
+      {/* Imagen de fondo con opacidad */}
       {bgImage && (
         <Image
           src={bgImage.imageUrl}
@@ -21,9 +27,10 @@ export default function Home() {
           fill
           className="object-cover opacity-20"
           data-ai-hint={bgImage.imageHint}
-          priority
+          priority // Carga la imagen con prioridad ya que es LCP (Largest Contentful Paint)
         />
       )}
+      {/* Gradiente para mejorar la legibilidad del texto sobre la imagen */}
       <div className="absolute inset-0 z-10 bg-gradient-to-b from-background/50 via-background/80 to-background" />
 
       <main className="z-20 flex flex-col items-center justify-center p-8 text-center">

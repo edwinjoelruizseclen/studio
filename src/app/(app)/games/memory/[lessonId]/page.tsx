@@ -12,6 +12,13 @@ import { useToast } from '@/hooks/use-toast';
 import vocabularyData from '@/lib/vocabulary.json';
 import { useParams } from 'next/navigation';
 
+/**
+ * @typedef {object} CardInfo
+ * @property {number} id - Identificador único de la carta.
+ * @property {'quechua' | 'spanish'} type - El tipo de palabra (idioma).
+ * @property {string} text - El texto de la palabra.
+ * @property {number} pairId - El ID que conecta la carta con su par.
+ */
 type CardInfo = {
   id: number;
   type: 'quechua' | 'spanish';
@@ -19,9 +26,15 @@ type CardInfo = {
   pairId: number;
 };
 
+/**
+ * Componente para el juego de Memoria.
+ * El usuario debe encontrar los pares de palabras quechua-español.
+ */
 export default function MemoryGame() {
   const params = useParams();
   const lessonId = parseInt(params.lessonId as string, 10);
+  
+  // Filtra el vocabulario para la lección actual.
   const [pairs, setPairs] = useState(() => vocabularyData.vocabulary
     .filter((v) => v.lessonId === lessonId)
     .map(({ quechua, spanish }) => ({ quechua, spanish }))
@@ -33,6 +46,9 @@ export default function MemoryGame() {
   const [progress, setProgress] = useState(0);
   const { toast } = useToast();
 
+  /**
+   * Crea y baraja el mazo de cartas a partir de los pares de palabras.
+   */
   const createDeck = useCallback(() => {
     if (pairs.length === 0) return;
     const deck = pairs.flatMap((pair, index) => [
@@ -44,17 +60,22 @@ export default function MemoryGame() {
     setMatched([]);
   }, [pairs]);
 
+  // Crea el mazo de cartas cuando el componente se monta.
   useEffect(() => {
     createDeck();
   }, [createDeck]);
   
   const isFinished = matched.length === pairs.length && pairs.length > 0;
 
+  // Efecto para actualizar la barra de progreso y manejar el final del juego.
   useEffect(() => {
     if (pairs.length > 0) {
       setProgress((matched.length / pairs.length) * 100);
     }
 
+    /**
+     * Si el juego ha terminado, actualiza el progreso del usuario.
+     */
     async function handleGameFinish() {
       if (isFinished) {
           try {
@@ -77,13 +98,16 @@ export default function MemoryGame() {
 
   }, [matched, isFinished, toast, lessonId, pairs.length]);
 
+  // Efecto para comprobar si las cartas volteadas son un par.
   useEffect(() => {
     if (flipped.length === 2) {
       const [first, second] = flipped;
       if (first.pairId === second.pairId) {
+        // Si son un par, se añaden a `matched`.
         setMatched((prev) => [...prev, first.pairId]);
         setFlipped([]);
       } else {
+        // Si no son un par, se voltean de nuevo después de un segundo.
         setTimeout(() => {
           setFlipped([]);
         }, 1000);
@@ -91,12 +115,17 @@ export default function MemoryGame() {
     }
   }, [flipped]);
 
+  /**
+   * Maneja el clic en una carta.
+   * @param {CardInfo} card - La carta en la que se hizo clic.
+   */
   const handleCardClick = (card: CardInfo) => {
     if (flipped.length < 2 && !flipped.includes(card) && !matched.includes(card.pairId)) {
       setFlipped((prev) => [...prev, card]);
     }
   };
 
+  // Si no hay vocabulario para esta lección, muestra un mensaje.
   if (pairs.length === 0) {
     return (
       <div className="container mx-auto flex flex-col items-center p-4 md:p-6 lg:p-8">
@@ -127,6 +156,7 @@ export default function MemoryGame() {
       </div>
 
       {isFinished ? (
+        // Vista de finalización del juego
         <Card className="w-full max-w-md p-8 text-center">
           <CheckCircle className="mx-auto mb-4 h-16 w-16 text-primary" />
           <h2 className="text-2xl font-bold">¡Excelente Memoria!</h2>
@@ -137,6 +167,7 @@ export default function MemoryGame() {
           </Button>
         </Card>
       ) : (
+        // Tablero de juego
         <div className="grid grid-cols-3 gap-4 md:grid-cols-4">
           {cards.map((card) => {
             const isFlipped = flipped.some(f => f.id === card.id);
@@ -149,8 +180,8 @@ export default function MemoryGame() {
                 onClick={() => handleCardClick(card)}
                 className={cn(
                   'flex h-24 w-24 cursor-pointer items-center justify-center p-2 text-center transition-transform duration-300',
-                  showCard ? 'bg-card' : 'bg-primary/20',
-                  isMatched ? 'opacity-50' : 'hover:scale-105'
+                  showCard ? 'bg-card' : 'bg-primary/20', // Muestra la carta si está volteada o encontrada
+                  isMatched ? 'opacity-50' : 'hover:scale-105' // Estilo para cartas encontradas
                 )}
                 style={{ transformStyle: 'preserve-3d', transform: showCard ? 'rotateY(180deg)' : '' }}
               >

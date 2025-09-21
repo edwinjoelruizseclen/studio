@@ -15,6 +15,19 @@ import {
 } from 'lucide-react';
 import vocabularyData from '@/lib/vocabulary.json';
 
+/**
+ * @typedef {object} Game
+ * @property {string} slug - Identificador único del juego para la URL.
+ * @property {string} title - Título del juego.
+ * @property {string} description - Descripción breve del juego.
+ * @property {React.ElementType} icon - Componente de ícono para el juego.
+ * @property {number} minLesson - La lección mínima a partir de la cual este juego está disponible.
+ */
+
+/**
+ * Array que define los juegos disponibles en la aplicación.
+ * @type {Game[]}
+ */
 const games = [
   {
     slug: 'word-matching',
@@ -46,10 +59,14 @@ const games = [
   },
 ];
 
-// Get unique lessons that have vocabulary
+/**
+ * Obtiene las lecciones únicas que tienen vocabulario asociado.
+ * Esto se usa para generar la lista de juegos por lección.
+ */
 const lessonsWithVocabulary = Array.from(new Set(vocabularyData.vocabulary.map(v => v.lessonId).filter(id => id !== null)))
   .map(id => {
-      // This is a bit of a hack to get lesson titles. Ideally this comes from a dedicated lessons file.
+      // Solución temporal para obtener los títulos de las lecciones.
+      // Idealmente, esto vendría de un archivo de lecciones dedicado.
       if (id === 1) return {id, title: 'Lección 1: Saludos y Presentaciones'};
       if (id === 2) return {id, title: 'Lección 2: Frases Comunes'};
       if (id === 3) return {id, title: 'Lección 3: Números y Colores'};
@@ -63,6 +80,10 @@ const lessonsWithVocabulary = Array.from(new Set(vocabularyData.vocabulary.map(v
   .sort((a,b) => a.id - b.id);
 
 
+/**
+ * Página que muestra una lista de todos los mini-juegos disponibles,
+ * agrupados por lección.
+ */
 export default function GamesPage() {
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
@@ -73,10 +94,12 @@ export default function GamesPage() {
         </p>
       </div>
       <div className="mx-auto grid max-w-4xl gap-8">
+        {/* Itera sobre cada lección que tiene vocabulario */}
         {lessonsWithVocabulary.map((lesson) => (
           <div key={lesson.id}>
             <h2 className="mb-4 font-headline text-2xl font-bold">{lesson.title}</h2>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {/* Filtra y muestra los juegos disponibles para el nivel de la lección */}
               {games.filter(g => lesson.id >= g.minLesson).map((game) => (
                 <Card
                   key={game.slug}

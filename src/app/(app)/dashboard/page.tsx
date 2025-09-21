@@ -20,12 +20,28 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { getLocalUserProgress } from '@/lib/user-progress';
 
+/**
+ * @typedef {object} Lesson
+ * @property {number} id - El identificador único de la lección.
+ * @property {string} title - El título de la lección.
+ * @property {number} progress - El progreso del usuario en la lección (0-100).
+ */
+
+/**
+ * Lecciones iniciales con su estado de progreso por defecto.
+ * @type {Lesson[]}
+ */
 const initialLessons = [
   { id: 1, title: 'Lección 1: Saludos y Presentaciones', progress: 0 },
   { id: 2, title: 'Lección 2: Frases Comunes', progress: 0 },
   { id: 3, title: 'Lección 3: Números y Colores', progress: 0 },
 ];
 
+/**
+ * Componente de la página principal (Dashboard).
+ * Muestra un resumen del progreso del usuario, incluyendo estadísticas
+ * y una lista de las lecciones actuales.
+ */
 export default function DashboardPage() {
   const [lessons, setLessons] = useState(initialLessons);
   const [lessonsCompleted, setLessonsCompleted] = useState(0);
@@ -33,6 +49,10 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    /**
+     * Carga el progreso del usuario desde el almacenamiento local
+     * y actualiza el estado del componente.
+     */
     async function loadProgress() {
       setIsLoading(true);
 
@@ -66,6 +86,7 @@ export default function DashboardPage() {
     loadProgress();
   }, []);
 
+  // Muestra un indicador de carga mientras se obtienen los datos.
   if (isLoading) {
     return (
       <div className="flex h-full w-full items-center justify-center">
@@ -83,6 +104,7 @@ export default function DashboardPage() {
         </p>
       </div>
 
+      {/* Sección de tarjetas de estadísticas */}
       <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -122,6 +144,7 @@ export default function DashboardPage() {
         </Card>
       </div>
 
+      {/* Sección de lista de lecciones */}
       <div className="grid gap-8">
         <div>
           <h2 className="mb-4 font-headline text-2xl font-bold">Lecciones Actuales</h2>

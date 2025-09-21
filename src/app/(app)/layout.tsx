@@ -12,7 +12,6 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarProvider,
-  SidebarTrigger,
 } from '@/components/ui/sidebar';
 import {
   BookOpen,
@@ -23,6 +22,17 @@ import {
 import Link from 'next/link';
 import { useIsMobile } from '@/hooks/use-mobile';
 
+/**
+ * @typedef {object} NavItem
+ * @property {string} href - La ruta de la página.
+ * @property {string} label - El texto a mostrar para el enlace.
+ * @property {React.ElementType} icon - El componente de ícono para el enlace.
+ */
+
+/**
+ * Define los elementos de navegación para la barra lateral y la barra inferior.
+ * @type {NavItem[]}
+ */
 const navItems = [
   { href: '/dashboard', label: 'Aprender', icon: Home },
   { href: '/lessons', label: 'Lecciones', icon: BookOpen },
@@ -30,6 +40,12 @@ const navItems = [
   { href: '/pronunciation', label: 'Práctica', icon: Mic },
 ];
 
+/**
+ * Layout principal para las páginas autenticadas de la aplicación.
+ * Incluye la barra de navegación lateral, la cabecera y la barra de navegación inferior.
+ * @param {object} props
+ * @param {React.ReactNode} props.children - Los componentes hijos que se renderizarán dentro del layout.
+ */
 export default function AppLayout({
   children,
 }: {
@@ -39,12 +55,14 @@ export default function AppLayout({
   const isMobile = useIsMobile();
   const [open, setOpen] = useState(isMobile ? false : true);
   
+  // Efecto para abrir o cerrar la barra lateral según si es vista móvil o de escritorio.
   useEffect(() => {
     setOpen(!isMobile);
   }, [isMobile]);
   
   return (
     <SidebarProvider open={open} onOpenChange={setOpen}>
+      {/* Barra de navegación lateral para escritorio */}
       <Sidebar
         collapsible="icon"
         className="hidden border-r bg-card md:block"
@@ -73,9 +91,12 @@ export default function AppLayout({
           </SidebarGroup>
         </SidebarContent>
       </Sidebar>
+      
+      {/* Contenido principal de la aplicación */}
       <SidebarInset className="flex min-h-screen flex-col">
         <AppHeader />
         <main className="flex-1 pb-20 md:pb-0">{children}</main>
+        {/* Barra de navegación inferior para móviles */}
         <BottomNav />
       </SidebarInset>
     </SidebarProvider>

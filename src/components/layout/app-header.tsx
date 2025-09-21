@@ -3,11 +3,16 @@ import Link from 'next/link';
 import { AndeanCrossIcon } from '@/components/icons/andean-cross';
 import { SidebarTrigger } from '../ui/sidebar';
 
+/**
+ * Cabecera principal de la aplicación que se muestra en las páginas internas.
+ * Contiene el logo y el disparador para la barra lateral en dispositivos móviles.
+ */
 export default function AppHeader() {
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-card">
       <div className="container flex h-16 items-center justify-between px-4 md:px-6">
         <div className="flex items-center gap-2">
+            {/* Botón para abrir/cerrar la barra lateral en móviles */}
             <SidebarTrigger className="md:hidden" />
             <Link href="/dashboard" className="flex items-center gap-2">
               <AndeanCrossIcon className="h-6 w-6 text-primary" />
