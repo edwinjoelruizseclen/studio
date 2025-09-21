@@ -13,8 +13,8 @@ import vocabularyData from '@/lib/vocabulary.json';
 
 type Word = { type: 'quechua' | 'spanish'; text: string };
 
-export default function WordMatchingGame({ params: { lessonId: lessonIdStr } }: { params: { lessonId: string } }) {
-  const lessonId = parseInt(lessonIdStr, 10);
+export default function WordMatchingGame({ params }: { params: { lessonId: string } }) {
+  const lessonId = parseInt(params.lessonId, 10);
   const [wordPairs, setWordPairs] = useState(() => vocabularyData.vocabulary
     .filter((v) => v.lessonId === lessonId)
     .map(({ quechua, spanish }) => ({ quechua, spanish }))
@@ -190,4 +190,3 @@ export default function WordMatchingGame({ params: { lessonId: lessonIdStr } }: 
     </div>
   );
 }
-

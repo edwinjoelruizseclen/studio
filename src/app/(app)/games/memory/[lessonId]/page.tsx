@@ -18,8 +18,8 @@ type CardInfo = {
   pairId: number;
 };
 
-export default function MemoryGame({ params: { lessonId: lessonIdStr } }: { params: { lessonId: string } }) {
-  const lessonId = parseInt(lessonIdStr, 10);
+export default function MemoryGame({ params }: { params: { lessonId: string } }) {
+  const lessonId = parseInt(params.lessonId, 10);
   const [pairs, setPairs] = useState(() => vocabularyData.vocabulary
     .filter((v) => v.lessonId === lessonId)
     .map(({ quechua, spanish }) => ({ quechua, spanish }))

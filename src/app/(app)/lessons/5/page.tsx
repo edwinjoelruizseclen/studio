@@ -7,7 +7,7 @@ import { VocabularyClient } from '../vocabulary-client';
 
 const vocabulary = vocabularyData.vocabulary.filter(v => v.lessonId === 5);
 
-export default function LessonDetailPage({ params: { id } }: { params: { id: string } }) {
+export default function LessonDetailPage({ params }: { params: { id: string } }) {
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
       <Link

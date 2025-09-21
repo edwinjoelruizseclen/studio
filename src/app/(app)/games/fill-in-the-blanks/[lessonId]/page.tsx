@@ -48,8 +48,8 @@ const allQuestions = [
   },
 ];
 
-export default function FillInTheBlanksGame({ params: { lessonId: lessonIdStr } }: { params: { lessonId: string } }) {
-  const lessonId = parseInt(lessonIdStr, 10);
+export default function FillInTheBlanksGame({ params }: { params: { lessonId: string } }) {
+  const lessonId = parseInt(params.lessonId, 10);
   const [questions, setQuestions] = useState(() => allQuestions.filter(q => q.lessonId === lessonId));
   
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
