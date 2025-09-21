@@ -1,7 +1,10 @@
-import type {NextConfig} from 'next';
+/** @type {import('next').NextConfig} */
+import pwa from 'next-pwa';
+import { pwaOptions } from './pwa-options.mjs';
 
-const nextConfig: NextConfig = {
-  /* config options here */
+const withPWA = pwa(pwaOptions);
+
+const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -32,4 +35,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withPWA(nextConfig);
