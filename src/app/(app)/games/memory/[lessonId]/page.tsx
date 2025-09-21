@@ -27,6 +27,29 @@ type CardInfo = {
 };
 
 /**
+ * Baraja un array utilizando el algoritmo Fisher-Yates.
+ * @param {CardInfo[]} array - El array de cartas a barajar.
+ * @returns {CardInfo[]} El array barajado.
+ */
+const shuffleDeck = (array: CardInfo[]) => {
+  let currentIndex = array.length,  randomIndex;
+
+  // Mientras queden elementos por barajar.
+  while (currentIndex !== 0) {
+    // Elige un elemento restante.
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // Y lo intercambia con el elemento actual.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+
+  return array;
+}
+
+
+/**
  * Componente para el juego de Memoria.
  * El usuario debe encontrar los pares de palabras quechua-español.
  */
@@ -55,7 +78,7 @@ export default function MemoryGame() {
       { id: index * 2, type: 'quechua', text: pair.quechua, pairId: index },
       { id: index * 2 + 1, type: 'spanish', text: pair.spanish, pairId: index },
     ]);
-    setCards(deck.sort(() => Math.random() - 0.5));
+    setCards(shuffleDeck(deck));
     setFlipped([]);
     setMatched([]);
   }, [pairs]);
@@ -181,15 +204,15 @@ export default function MemoryGame() {
                 className={cn(
                   'flex h-24 w-24 cursor-pointer items-center justify-center p-2 text-center transition-transform duration-300',
                   showCard ? 'bg-card' : 'bg-primary/20', // Muestra la carta si está volteada o encontrada
-                  isMatched ? 'opacity-50' : 'hover:scale-105' // Estilo para cartas encontradas
+                  isMatched ? 'opacity-50' : 'hover:scale-105', // Estilo para cartas encontradas
+                  (isFlipped && flipped.length < 2) && '!bg-accent'
                 )}
-                style={{ transformStyle: 'preserve-3d', transform: showCard ? 'rotateY(180deg)' : '' }}
+                style={{ transformStyle: 'preserve-3d' }}
               >
                 <div 
-                  className="absolute h-full w-full flex items-center justify-center p-2 font-semibold"
-                  style={{ backfaceVisibility: 'hidden', transform: showCard ? 'rotateY(180deg)' : '' }}
+                  className={cn("flex items-center justify-center p-2 font-semibold transition-opacity duration-300", showCard ? "opacity-100" : "opacity-0" )}
                 >
-                  {showCard ? card.text : ''}
+                  {card.text}
                 </div>
               </Card>
             );
