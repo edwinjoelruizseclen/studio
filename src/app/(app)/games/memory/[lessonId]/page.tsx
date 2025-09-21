@@ -10,6 +10,7 @@ import { Progress } from '@/components/ui/progress';
 import { updateLocalUserProgress } from '@/lib/user-progress';
 import { useToast } from '@/hooks/use-toast';
 import vocabularyData from '@/lib/vocabulary.json';
+import { useParams } from 'next/navigation';
 
 type CardInfo = {
   id: number;
@@ -18,8 +19,9 @@ type CardInfo = {
   pairId: number;
 };
 
-export default function MemoryGame({ params }: { params: { lessonId: string } }) {
-  const lessonId = parseInt(params.lessonId, 10);
+export default function MemoryGame() {
+  const params = useParams();
+  const lessonId = parseInt(params.lessonId as string, 10);
   const [pairs, setPairs] = useState(() => vocabularyData.vocabulary
     .filter((v) => v.lessonId === lessonId)
     .map(({ quechua, spanish }) => ({ quechua, spanish }))

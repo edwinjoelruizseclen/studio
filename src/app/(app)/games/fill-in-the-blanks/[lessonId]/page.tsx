@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
 import { updateLocalUserProgress } from '@/lib/user-progress';
 import { useToast } from '@/hooks/use-toast';
+import { useParams } from 'next/navigation';
 
 const allQuestions = [
   {
@@ -48,8 +49,9 @@ const allQuestions = [
   },
 ];
 
-export default function FillInTheBlanksGame({ params }: { params: { lessonId: string } }) {
-  const lessonId = parseInt(params.lessonId, 10);
+export default function FillInTheBlanksGame() {
+  const params = useParams();
+  const lessonId = parseInt(params.lessonId as string, 10);
   const [questions, setQuestions] = useState(() => allQuestions.filter(q => q.lessonId === lessonId));
   
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);

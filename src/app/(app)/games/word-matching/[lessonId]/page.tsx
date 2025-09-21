@@ -10,11 +10,13 @@ import { Progress } from '@/components/ui/progress';
 import { updateLocalUserProgress } from '@/lib/user-progress';
 import { useToast } from '@/hooks/use-toast';
 import vocabularyData from '@/lib/vocabulary.json';
+import { useParams } from 'next/navigation';
 
 type Word = { type: 'quechua' | 'spanish'; text: string };
 
-export default function WordMatchingGame({ params }: { params: { lessonId: string } }) {
-  const lessonId = parseInt(params.lessonId, 10);
+export default function WordMatchingGame() {
+  const params = useParams();
+  const lessonId = parseInt(params.lessonId as string, 10);
   const [wordPairs, setWordPairs] = useState(() => vocabularyData.vocabulary
     .filter((v) => v.lessonId === lessonId)
     .map(({ quechua, spanish }) => ({ quechua, spanish }))

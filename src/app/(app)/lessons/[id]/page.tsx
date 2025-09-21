@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import vocabularyData from '@/lib/vocabulary.json';
 import { VocabularyClient } from '../vocabulary-client';
+import { notFound } from 'next/navigation';
 
 const lessonInfo = {
   '1': {
@@ -21,12 +22,25 @@ const lessonInfo = {
   '4': {
     title: 'Miembros de la Familia',
     description: 'Habla sobre tu familia.',
+  },
+  '5': {
+    title: 'Pedir Comida',
+    description: 'Navega por el menú de un restaurante en quechua.',
+  },
+  '6': {
+    title: 'Pedir Direcciones',
+    description: 'Encuentra tu camino.',
   }
 };
 
 export default function LessonDetailPage({ params }: { params: { id: string } }) {
   const lessonId = parseInt(params.id, 10);
-  const info = lessonInfo[params.id as keyof typeof lessonInfo] || { title: 'Lección Desconocida', description: '' };
+  const infoKey = params.id as keyof typeof lessonInfo;
+  
+  if (!lessonInfo[infoKey]) {
+    notFound();
+  }
+  const info = lessonInfo[infoKey];
   
   const vocabulary = vocabularyData.vocabulary.filter((v) => v.lessonId === lessonId);
 
@@ -64,11 +78,13 @@ export default function LessonDetailPage({ params }: { params: { id: string } })
         ) : (
           <div></div>
         )}
-        <Link href={`/lessons/${lessonId + 1}`}>
-          <Button>
-            Siguiente Lección <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
-        </Link>
+        {lessonId < 6 ? (
+          <Link href={`/lessons/${lessonId + 1}`}>
+            <Button>
+              Siguiente Lección <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </Link>
+        ) : <div></div>}
       </div>
     </div>
   );
