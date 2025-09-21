@@ -18,7 +18,6 @@ import {
   BookOpen,
   Gamepad2,
   Home,
-  MessageSquareQuote,
   Mic,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -29,7 +28,6 @@ const navItems = [
   { href: '/lessons', label: 'Lecciones', icon: BookOpen },
   { href: '/games', label: 'Juegos', icon: Gamepad2 },
   { href: '/pronunciation', label: 'Práctica', icon: Mic },
-  { href: '/translate', label: 'Traductor', icon: MessageSquareQuote },
 ];
 
 export default function AppLayout({

@@ -6,7 +6,6 @@ import {
   BookOpen,
   Gamepad2,
   Mic,
-  MessageSquareQuote,
   Home,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -16,7 +15,6 @@ const navItems = [
   { href: '/lessons', label: 'Lecciones', icon: BookOpen },
   { href: '/games', label: 'Juegos', icon: Gamepad2 },
   { href: '/pronunciation', label: 'Práctica', icon: Mic },
-  { href: '/translate', label: 'Traductor', icon: MessageSquareQuote },
 ];
 
 export default function BottomNav() {
@@ -24,7 +22,7 @@ export default function BottomNav() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 border-t bg-card md:hidden">
-      <div className="grid h-16 grid-cols-5">
+      <div className="grid h-16 grid-cols-4">
         {navItems.map((item) => {
           const isActive = pathname.startsWith(item.href);
           return (
