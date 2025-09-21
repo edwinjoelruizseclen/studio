@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Volume2, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -9,33 +9,67 @@ type VocabularyItem = {
   lessonId: number | null;
   quechua: string;
   spanish: string;
-  audioSrc: string;
 };
 
 export function VocabularyClient({ vocabulary }: { vocabulary: VocabularyItem[] }) {
   const [playingId, setPlayingId] = useState<number | null>(null);
+  const [isSupported, setIsSupported] = useState(true);
   const { toast } = useToast();
 
-  const handlePlayback = (item: VocabularyItem) => {
-    if (playingId !== null) return;
-
-    setPlayingId(item.id);
-    const audio = new Audio(item.audioSrc);
-    
-    audio.onerror = () => {
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      setIsSupported(true);
+    } else {
+      setIsSupported(false);
       toast({
         variant: 'destructive',
-        title: 'Error de audio',
-        description: `No se pudo encontrar o reproducir el archivo de audio para "${item.quechua}".`,
+        title: 'Funcionalidad no soportada',
+        description: 'Tu navegador no soporta la síntesis de voz.',
+      });
+    }
+  }, [toast]);
+
+  const handlePlayback = (item: VocabularyItem) => {
+    if (playingId !== null || !isSupported) return;
+
+    try {
+      setPlayingId(item.id);
+      
+      const utterance = new SpeechSynthesisUtterance(item.quechua);
+      
+      // Attempt to find a Spanish voice for better phonetic pronunciation
+      const voices = window.speechSynthesis.getVoices();
+      const spanishVoice = voices.find(voice => voice.lang.startsWith('es'));
+      if (spanishVoice) {
+        utterance.voice = spanishVoice;
+      }
+      utterance.lang = 'es-US'; // Fallback language
+      
+      utterance.onend = () => {
+        setPlayingId(null);
+      };
+      
+      utterance.onerror = (event) => {
+        console.error('SpeechSynthesisUtterance.onerror', event);
+        toast({
+          variant: 'destructive',
+          title: 'Error de audio',
+          description: `No se pudo reproducir el audio para "${item.quechua}".`,
+        });
+        setPlayingId(null);
+      };
+
+      window.speechSynthesis.speak(utterance);
+
+    } catch (error) {
+      console.error('Error in handlePlayback:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error inesperado',
+        description: 'Ocurrió un error al intentar reproducir el audio.',
       });
       setPlayingId(null);
-    };
-
-    audio.onended = () => {
-      setPlayingId(null);
-    };
-    
-    audio.play();
+    }
   };
   
   return (
@@ -53,7 +87,7 @@ export function VocabularyClient({ vocabulary }: { vocabulary: VocabularyItem[] 
             variant="ghost" 
             size="icon" 
             onClick={() => handlePlayback(item)}
-            disabled={playingId !== null}
+            disabled={playingId !== null || !isSupported}
             aria-label={`Escuchar ${item.quechua}`}
           >
             {playingId === item.id ? (

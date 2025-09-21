@@ -1,11 +1,11 @@
 {
-  "name": "Rima Quechua",
-  "short_name": "RimaQuechua",
-  "description": "Learn Quechua with interactive lessons and games.",
+  "name": "Rimay App",
+  "short_name": "Rimay",
+  "description": "Aprende quechua con lecciones y juegos interactivos.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f4f1ec",
-  "theme_color": "#d4a24e",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FBBF24",
   "icons": [
     {
       "src": "/icons/icon-192x192.png",
@@ -16,6 +16,12 @@
       "src": "/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
+    },
+    {
+      "src": "/icons/maskable_icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }

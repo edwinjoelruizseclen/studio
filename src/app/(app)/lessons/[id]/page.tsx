@@ -28,12 +28,7 @@ export default function LessonDetailPage({ params: { id } }: { params: { id: str
   const lessonId = parseInt(id, 10);
   const info = lessonInfo[id as keyof typeof lessonInfo] || { title: 'Lección Desconocida', description: '' };
   
-  const vocabulary = vocabularyData.vocabulary
-    .filter((v) => v.lessonId === lessonId)
-    .map(item => ({
-      ...item,
-      audioSrc: `/audio/${item.quechua.toLowerCase().replace(/[^a-z0-9\\s]/g, '').replace(/\\s/g, '_')}.mp3`
-    }));
+  const vocabulary = vocabularyData.vocabulary.filter((v) => v.lessonId === lessonId);
 
 
   return (

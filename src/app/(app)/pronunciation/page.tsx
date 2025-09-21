@@ -8,8 +8,7 @@ import { cn } from '@/lib/utils';
 import vocabularyData from '@/lib/vocabulary.json';
 
 const phrases = vocabularyData.vocabulary.map(item => ({
-  ...item,
-  audioSrc: `/audio/${item.quechua.toLowerCase().replace(/[^a-z0-9\\s]/g, '').replace(/\\s/g, '_')}.mp3`
+  ...item
 })).sort((a, b) => a.id - b.id);
 
 
@@ -19,38 +18,45 @@ function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
   const [isPlayingUserAudio, setIsPlayingUserAudio] = useState(false);
   const [isPlayingNativeAudio, setIsPlayingNativeAudio] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [isSynthesisSupported, setIsSynthesisSupported] = useState(true);
   
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const userAudioRef = useRef<HTMLAudioElement | null>(null);
-  const nativeAudioRef = useRef<HTMLAudioElement | null>(null);
-
-  const handleNativePlayback = () => {
-    if (isPlayingNativeAudio || isRecording || isPlayingUserAudio) return;
-
-    const audio = nativeAudioRef.current;
-    if (audio) {
-      audio.currentTime = 0;
-      audio.play();
-    }
-  };
 
   useEffect(() => {
-    // Pre-load native audio
-    const audio = new Audio(phrase.audioSrc);
-    audio.onplay = () => setIsPlayingNativeAudio(true);
-    audio.onpause = () => setIsPlayingNativeAudio(false);
-    audio.onended = () => setIsPlayingNativeAudio(false);
-    audio.onerror = () => {
-      toast({ variant: 'destructive', title: 'Error de Audio', description: 'No se pudo cargar el audio nativo.' });
-      setIsPlayingNativeAudio(false);
-    };
-    nativeAudioRef.current = audio;
-
-    return () => {
-      audio.pause();
-      nativeAudioRef.current = null;
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      setIsSynthesisSupported(true);
+    } else {
+      setIsSynthesisSupported(false);
     }
-  }, [phrase.audioSrc, toast]);
+  }, []);
+
+  const handleNativePlayback = () => {
+    if (isPlayingNativeAudio || isRecording || isPlayingUserAudio || !isSynthesisSupported) return;
+
+    try {
+      setIsPlayingNativeAudio(true);
+      const utterance = new SpeechSynthesisUtterance(phrase.quechua);
+      const voices = window.speechSynthesis.getVoices();
+      const spanishVoice = voices.find(voice => voice.lang.startsWith('es'));
+      if (spanishVoice) {
+        utterance.voice = spanishVoice;
+      }
+      utterance.lang = 'es-US';
+
+      utterance.onend = () => setIsPlayingNativeAudio(false);
+      utterance.onerror = (e) => {
+        console.error('Speech synthesis error', e);
+        toast({ variant: 'destructive', title: 'Error de Audio', description: 'No se pudo generar el audio nativo.' });
+        setIsPlayingNativeAudio(false);
+      };
+      window.speechSynthesis.speak(utterance);
+    } catch (e) {
+      console.error(e);
+      setIsPlayingNativeAudio(false);
+      toast({ variant: 'destructive', title: 'Error', description: 'No se pudo reproducir el audio.' });
+    }
+  };
 
 
   const handleRecord = async () => {
@@ -59,8 +65,8 @@ function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
       setIsRecording(false);
       return;
     }
-
-    if (nativeAudioRef.current) nativeAudioRef.current.pause();
+    
+    window.speechSynthesis.cancel();
     if (userAudioRef.current) userAudioRef.current.pause();
     setIsPlayingUserAudio(false);
     setIsPlayingNativeAudio(false);
@@ -135,7 +141,7 @@ function PronunciationCard({ phrase }: { phrase: (typeof phrases)[0] }) {
             size="icon"
             aria-label="Escuchar pronunciación nativa"
             onClick={handleNativePlayback}
-            disabled={isPlayingNativeAudio || isRecording || isPlayingUserAudio}
+            disabled={isPlayingNativeAudio || isRecording || isPlayingUserAudio || !isSynthesisSupported}
           >
              {isPlayingNativeAudio ? <Loader2 className="h-5 w-5 animate-spin" /> : <Volume2 className="h-5 w-5" />}
           </Button>
@@ -189,7 +195,7 @@ export default function PronunciationPage() {
           Práctica de Pronunciación
         </h1>
         <p className="text-muted-foreground">
-          Escucha una pronunciación de alta calidad, grábate y compara para perfeccionar
+          Escucha una pronunciación, grábate y compara para perfeccionar
           tu acento.
         </p>
       </div>
