@@ -54,6 +54,23 @@ const lessonCategoriesData = [
       },
     ],
   },
+  {
+    category: 'Módulo Avanzado',
+    lessons: [
+       {
+        id: 7,
+        title: 'Animales de la Granja',
+        progress: 0,
+        description: 'Conoce los nombres de los animales comunes.',
+      },
+      {
+        id: 8,
+        title: 'Prendas de Vestir',
+        progress: 0,
+        description: 'Aprende a nombrar la ropa que usas.',
+      },
+    ],
+  }
 ];
 
 export default function LessonsPage() {

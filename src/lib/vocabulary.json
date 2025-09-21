@@ -46,6 +46,20 @@
     { "id": 44, "lessonId": null, "quechua": "Manam", "spanish": "No" },
     { "id": 45, "lessonId": null, "quechua": "Maymantam kanki?", "spanish": "¿De dónde eres?" },
     { "id": 46, "lessonId": null, "quechua": "Yaku, panay", "spanish": "Agua, por favor" },
-    { "id": 47, "lessonId": null, "quechua": "Haykataq?", "spanish": "¿Cuánto cuesta?" }
+    { "id": 47, "lessonId": null, "quechua": "Haykataq?", "spanish": "¿Cuánto cuesta?" },
+    { "id": 48, "lessonId": 7, "quechua": "Waka", "spanish": "Vaca" },
+    { "id": 49, "lessonId": 7, "quechua": "Khuchi", "spanish": "Cerdo" },
+    { "id": 50, "lessonId": 7, "quechua": "Wallpa", "spanish": "Gallina" },
+    { "id": 51, "lessonId": 7, "quechua": "Uwiha", "spanish": "Oveja" },
+    { "id": 52, "lessonId": 7, "quechua": "Kawallu", "spanish": "Caballo" },
+    { "id": 53, "lessonId": 7, "quechua": "Llama", "spanish": "Llama" },
+    { "id": 54, "lessonId": 7, "qauechua": "Paqu", "spanish": "Alpaca" },
+    { "id": 55, "lessonId": 8, "quechua": "P'acha", "spanish": "Ropa" },
+    { "id": 56, "lessonId": 8, "quechua": "Chumpi", "spanish": "Cinturón" },
+    { "id": 57, "lessonId": 8, "quechua": "Unku", "spanish": "Camisa" },
+    { "id": 58, "lessonId": 8, "quechua": "Wara", "spanish": "Pantalón" },
+    { "id": 59, "lessonId": 8, "quechua": "Ch'ullu", "spanish": "Gorro" },
+    { "id": 60, "lessonId": 8, "quechua": "Lliklla", "spanish": "Manta" },
+    { "id": 61, "lessonId": 8, "quechua": "Usuta", "spanish": "Sandalia" }
   ]
 }

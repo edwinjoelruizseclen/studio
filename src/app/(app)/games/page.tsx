@@ -11,6 +11,7 @@ import {
   AlignHorizontalDistributeCenter,
   MemoryStick,
   Puzzle,
+  Shuffle,
 } from 'lucide-react';
 import vocabularyData from '@/lib/vocabulary.json';
 
@@ -20,28 +21,34 @@ const games = [
     title: 'Emparejar Palabras',
     description: 'Une palabras en quechua con sus traducciones.',
     icon: AlignHorizontalDistributeCenter,
-    minLesson: 1, // Available from lesson 1
+    minLesson: 1,
   },
   {
     slug: 'fill-in-the-blanks',
     title: 'Rellena los Huecos',
     description: 'Completa oraciones eligiendo la palabra correcta.',
     icon: Puzzle,
-    minLesson: 3, // Available from lesson 3
+    minLesson: 3,
   },
   {
     slug: 'memory',
     title: 'Memoria',
     description: 'Encuentra pares de palabras.',
     icon: MemoryStick,
-    minLesson: 4, // Available from lesson 4
+    minLesson: 4,
+  },
+  {
+    slug: 'scramble',
+    title: 'Palabra Revuelta',
+    description: 'Ordena las letras para formar la palabra correcta.',
+    icon: Shuffle,
+    minLesson: 1,
   },
 ];
 
 // Get unique lessons that have vocabulary
 const lessonsWithVocabulary = Array.from(new Set(vocabularyData.vocabulary.map(v => v.lessonId).filter(id => id !== null)))
   .map(id => {
-      const lessonSample = vocabularyData.vocabulary.find(v => v.lessonId === id);
       // This is a bit of a hack to get lesson titles. Ideally this comes from a dedicated lessons file.
       if (id === 1) return {id, title: 'Lección 1: Saludos y Presentaciones'};
       if (id === 2) return {id, title: 'Lección 2: Frases Comunes'};
@@ -49,6 +56,8 @@ const lessonsWithVocabulary = Array.from(new Set(vocabularyData.vocabulary.map(v
       if (id === 4) return {id, title: 'Lección 4: Miembros de la Familia'};
       if (id === 5) return {id, title: 'Lección 5: Pedir Comida'};
       if (id === 6) return {id, title: 'Lección 6: Pedir Direcciones'};
+      if (id === 7) return {id, title: 'Lección 7: Animales de la Granja'};
+      if (id === 8) return {id, title: 'Lección 8: Prendas de Vestir'};
       return {id, title: `Lección ${id}`};
   })
   .sort((a,b) => a.id - b.id);

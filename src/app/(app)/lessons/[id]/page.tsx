@@ -30,6 +30,14 @@ const lessonInfo = {
   '6': {
     title: 'Pedir Direcciones',
     description: 'Encuentra tu camino.',
+  },
+  '7': {
+    title: 'Animales de la Granja',
+    description: 'Conoce los nombres de los animales comunes.',
+  },
+  '8': {
+    title: 'Prendas de Vestir',
+    description: 'Aprende a nombrar la ropa que usas.',
   }
 };
 
@@ -78,7 +86,7 @@ export default function LessonDetailPage({ params }: { params: { id: string } })
         ) : (
           <div></div>
         )}
-        {lessonId < 6 ? (
+        {lessonId < 8 ? (
           <Link href={`/lessons/${lessonId + 1}`}>
             <Button>
               Siguiente Lección <ArrowRight className="ml-2 h-4 w-4" />

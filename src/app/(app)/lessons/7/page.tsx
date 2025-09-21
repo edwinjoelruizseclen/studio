@@ -5,7 +5,7 @@ import Link from 'next/link';
 import vocabularyData from '@/lib/vocabulary.json';
 import { VocabularyClient } from '../vocabulary-client';
 
-const vocabulary = vocabularyData.vocabulary.filter(v => v.lessonId === 6);
+const vocabulary = vocabularyData.vocabulary.filter(v => v.lessonId === 7);
 
 export default function LessonDetailPage({ params }: { params: { id: string } }) {
   return (
@@ -18,10 +18,10 @@ export default function LessonDetailPage({ params }: { params: { id: string } })
         Volver a Lecciones
       </Link>
       <h1 className="mb-2 font-headline text-3xl font-bold">
-        Lección 6: Pedir Direcciones
+        Lección 7: Animales de la Granja
       </h1>
       <p className="mb-8 text-muted-foreground">
-        Aprende frases básicas para encontrar tu camino.
+        Conoce los nombres de los animales comunes.
       </p>
 
       <Card>
@@ -29,17 +29,17 @@ export default function LessonDetailPage({ params }: { params: { id: string } })
           <CardTitle>Vocabulario</CardTitle>
         </CardHeader>
         <CardContent>
-           <VocabularyClient vocabulary={vocabulary} />
+          <VocabularyClient vocabulary={vocabulary} />
         </CardContent>
       </Card>
 
       <div className="mt-8 flex justify-between">
-         <Link href="/lessons/5">
+         <Link href="/lessons/6">
           <Button variant="outline">
             <ArrowLeft className="mr-2 h-4 w-4" /> Lección Anterior
           </Button>
         </Link>
-        <Link href="/lessons/7">
+        <Link href="/lessons/8">
           <Button>
             Siguiente Lección <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
