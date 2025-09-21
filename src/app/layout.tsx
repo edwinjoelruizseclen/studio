@@ -37,6 +37,7 @@ export default function RootLayout({
         <meta name="msapplication-TileColor" content="#FFFFFF" />
         <meta name="msapplication-tap-highlight" content="no" />
         <meta name="theme-color" content="#FFFFFF" />
+        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
       </head>
       <body className={cn('min-h-screen font-body antialiased')}>
         {children}
