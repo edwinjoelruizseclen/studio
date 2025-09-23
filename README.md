@@ -2,9 +2,29 @@
 
 Este documento detalla el proceso de construcción de Rimay App, una Progressive Web App (PWA) para aprender quechua a través de lecciones y juegos interactivos.
 
-> **Nota para estudiantes:** Si no entiendes alguna palabra técnica, ¡no te preocupes! Hemos creado un **`GLOSARIO_TECNICO.md`** en el proyecto para explicarte todo de forma sencilla.
+## 1. Requisitos Previos: Instalación de Tecnologías
 
-## 1. Tecnologías Utilizadas
+Antes de empezar, necesitas tener instaladas dos herramientas fundamentales en tu computadora:
+
+*   **Node.js**: Es el entorno que permite ejecutar JavaScript fuera del navegador. Next.js y muchas de nuestras herramientas funcionan sobre Node.js.
+*   **npm (Node Package Manager)**: Es el gestor de paquetes que viene incluido con Node.js. Lo usamos para descargar e instalar todas las "dependencias" o librerías que nuestro proyecto necesita (como React, Next.js, Tailwind, etc.).
+
+**¿Cómo instalarlas?**
+
+1.  Ve a la página oficial de Node.js: **[nodejs.org](https://nodejs.org/)**
+2.  Descarga la versión recomendada para la mayoría de los usuarios (**LTS**).
+3.  Ejecuta el instalador que descargaste y sigue los pasos. ¡Es como instalar cualquier otro programa!
+
+Para verificar que se instalaron correctamente, puedes abrir una terminal o consola de comandos y escribir:
+
+```bash
+node -v
+npm -v
+```
+
+Si ambos comandos te muestran un número de versión, ¡estás lista para empezar!
+
+## 2. Tecnologías Utilizadas
 
 *   **Framework**: Next.js 15 (con App Router y Turbopack)
 *   **Lenguaje**: TypeScript
@@ -13,7 +33,7 @@ Este documento detalla el proceso de construcción de Rimay App, una Progressive
 *   **Iconos**: `lucide-react`
 *   **PWA**: `next-pwa`
 
-## 2. Configuración Inicial del Proyecto
+## 3. Configuración Inicial del Proyecto
 
 1.  **Crear la aplicación Next.js:**
     Se inicia un nuevo proyecto con la configuración básica de Next.js, TypeScript y Tailwind CSS.
@@ -39,7 +59,7 @@ Este documento detalla el proceso de construcción de Rimay App, una Progressive
 4.  **Configurar la PWA:**
     Se modifica `next.config.mjs` para integrar `next-pwa`, asegurando que la aplicación genere un *service worker* y pueda funcionar sin conexión. Se crea el archivo `public/manifest.json` para definir el nombre, los iconos y los colores de la PWA.
 
-## 3. Estructura y Estilos Base
+## 4. Estructura y Estilos Base
 
 1.  **Fuentes y Estilos Globales (`src/app/globals.css`):**
     Se importa la fuente "PT Sans" desde Google Fonts y se definen las variables de color (CSS variables) para los temas claro y oscuro, siguiendo el sistema de diseño de ShadCN.
@@ -50,7 +70,7 @@ Este documento detalla el proceso de construcción de Rimay App, una Progressive
 3.  **Página de Inicio (`src/app/page.tsx`):**
     Se diseña la landing page, que presenta la aplicación al usuario. Incluye un fondo atractivo, el logo (AndeanCrossIcon) y un botón de "Empezar" que dirige al dashboard.
 
-## 4. Desarrollo de la Aplicación Autenticada
+## 5. Desarrollo de la Aplicación Autenticada
 
 ### a. Layout de la App (`src/app/(app)/layout.tsx`)
 
@@ -112,13 +132,13 @@ Se desarrollan cuatro juegos interactivos para practicar el vocabulario. Cada ju
     *   Utiliza `navigator.mediaDevices.getUserMedia` y `MediaRecorder` para grabar el audio del usuario.
     *   Genera una URL local (`URL.createObjectURL`) para que el usuario pueda reproducir su propia grabación.
 
-## 5. Lógica Reutilizable y Utilidades
+## 6. Lógica Reutilizable y Utilidades
 
 *   **`user-progress.ts`**: Contiene funciones (`getLocalUserProgress`, `updateLocalUserProgress`) para abstraer la lógica de lectura y escritura del progreso del usuario en el `localStorage` del navegador.
 *   **`use-mobile.tsx`**: Un hook personalizado que detecta si la aplicación se está ejecutando en un dispositivo móvil basándose en el ancho de la ventana.
 *   **`use-toast.ts`**: Hook que gestiona el estado de las notificaciones emergentes (toasts) en toda la aplicación.
 
-## 6. Pruebas y Despliegue
+## 7. Pruebas y Despliegue
 
 1.  **Pruebas Locales:**
     *   Se corre `npm run dev` para iniciar el servidor de desarrollo.
