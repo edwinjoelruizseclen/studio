@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
@@ -7,6 +8,10 @@ import { VocabularyClient } from '../vocabulary-client';
 
 const vocabulary = vocabularyData.vocabulary.filter(v => v.lessonId === 6);
 
+/**
+ * Página de detalle para la Lección 6.
+ * Muestra el vocabulario y la navegación a lecciones adyacentes.
+ */
 export default function LessonDetailPage({ params }: { params: { id: string } }) {
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">

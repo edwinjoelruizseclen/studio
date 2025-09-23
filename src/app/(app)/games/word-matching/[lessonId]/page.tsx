@@ -51,7 +51,8 @@ export default function WordMatchingGame() {
       (p) => ({ type: 'spanish', text: p.spanish } as Word)
     );
     const allWords = [...quechuaWords, ...spanishWords];
-    setWords(allWords.sort(() => Math.random() - 0.5));
+    allWords.sort(() => Math.random() - 0.5);
+    setWords(allWords);
     setMatched([]);
     setSelected([]);
     setAttempted([]);

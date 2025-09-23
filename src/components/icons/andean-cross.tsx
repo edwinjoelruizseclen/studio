@@ -1,5 +1,10 @@
+
 import * as React from 'react';
 
+/**
+ * Componente de ícono para la Chacana o Cruz Andina.
+ * @param {React.SVGProps<SVGSVGElement>} props - Propiedades SVG estándar.
+ */
 export function AndeanCrossIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg

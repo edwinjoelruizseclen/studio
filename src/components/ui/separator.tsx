@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -5,6 +6,11 @@ import * as SeparatorPrimitive from "@radix-ui/react-separator"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * Componente que renderiza una línea horizontal o vertical para separar contenido.
+ * @param {React.ComponentPropsWithoutRef<typeof SeparatorPrimitive.Root>} props - Propiedades del separador de Radix UI.
+ * @param {'horizontal' | 'vertical'} [props.orientation='horizontal'] - La orientación del separador.
+ */
 const Separator = React.forwardRef<
   React.ElementRef<typeof SeparatorPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof SeparatorPrimitive.Root>

@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -15,6 +16,9 @@ const SheetClose = SheetPrimitive.Close
 
 const SheetPortal = SheetPrimitive.Portal
 
+/**
+ * Superposición que se muestra detrás del `SheetContent`.
+ */
 const SheetOverlay = React.forwardRef<
   React.ElementRef<typeof SheetPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof SheetPrimitive.Overlay>
@@ -30,6 +34,9 @@ const SheetOverlay = React.forwardRef<
 ))
 SheetOverlay.displayName = SheetPrimitive.Overlay.displayName
 
+/**
+ * Variantes de estilo para el `SheetContent`, que controla desde qué lado aparece.
+ */
 const sheetVariants = cva(
   "fixed z-50 gap-4 bg-background p-6 shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:duration-500",
   {
@@ -53,6 +60,9 @@ interface SheetContentProps
   extends React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>,
     VariantProps<typeof sheetVariants> {}
 
+/**
+ * Contenido del `Sheet`. Es el panel que se desliza desde un lado de la pantalla.
+ */
 const SheetContent = React.forwardRef<
   React.ElementRef<typeof SheetPrimitive.Content>,
   SheetContentProps
@@ -74,6 +84,9 @@ const SheetContent = React.forwardRef<
 ))
 SheetContent.displayName = SheetPrimitive.Content.displayName
 
+/**
+ * Cabecera para el `Sheet`.
+ */
 const SheetHeader = ({
   className,
   ...props
@@ -88,6 +101,9 @@ const SheetHeader = ({
 )
 SheetHeader.displayName = "SheetHeader"
 
+/**
+ * Pie de página para el `Sheet`.
+ */
 const SheetFooter = ({
   className,
   ...props
@@ -102,6 +118,9 @@ const SheetFooter = ({
 )
 SheetFooter.displayName = "SheetFooter"
 
+/**
+ * Título para el `SheetHeader`.
+ */
 const SheetTitle = React.forwardRef<
   React.ElementRef<typeof SheetPrimitive.Title>,
   React.ComponentPropsWithoutRef<typeof SheetPrimitive.Title>
@@ -114,6 +133,9 @@ const SheetTitle = React.forwardRef<
 ))
 SheetTitle.displayName = SheetPrimitive.Title.displayName
 
+/**
+ * Descripción para el `SheetHeader`.
+ */
 const SheetDescription = React.forwardRef<
   React.ElementRef<typeof SheetPrimitive.Description>,
   React.ComponentPropsWithoutRef<typeof SheetPrimitive.Description>

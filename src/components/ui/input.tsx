@@ -1,8 +1,18 @@
+
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
+/**
+ * Props para el componente Input. Extiende las propiedades de un input HTML estándar.
+ */
+export interface InputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {}
+
+/**
+ * Componente de input de texto con estilos predefinidos.
+ */
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, ...props }, ref) => {
     return (
       <input

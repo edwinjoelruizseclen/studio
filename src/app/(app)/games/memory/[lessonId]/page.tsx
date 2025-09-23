@@ -28,10 +28,10 @@ type CardInfo = {
 
 /**
  * Baraja un array utilizando el algoritmo Fisher-Yates.
- * @param {CardInfo[]} array - El array de cartas a barajar.
- * @returns {CardInfo[]} El array barajado.
+ * @param {any[]} array - El array a barajar.
+ * @returns {any[]} El array barajado.
  */
-const shuffleDeck = (array: CardInfo[]) => {
+const shuffleDeck = (array: any[]) => {
   let currentIndex = array.length,  randomIndex;
 
   // Mientras queden elementos por barajar.

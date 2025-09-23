@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useToast } from "@/hooks/use-toast"
@@ -10,6 +11,10 @@ import {
   ToastViewport,
 } from "@/components/ui/toast"
 
+/**
+ * Componente que renderiza la lista de toasts (notificaciones) activos.
+ * Utiliza el hook `useToast` para obtener los toasts que deben mostrarse.
+ */
 export function Toaster() {
   const { toasts } = useToast()
 

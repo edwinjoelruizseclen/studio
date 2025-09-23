@@ -1,6 +1,7 @@
+
 "use client"
 
-// Inspired by react-hot-toast library
+// Inspirado en la librería react-hot-toast.
 import * as React from "react"
 
 import type {
@@ -8,9 +9,17 @@ import type {
   ToastProps,
 } from "@/components/ui/toast"
 
-const TOAST_LIMIT = 1
-const TOAST_REMOVE_DELAY = 1000000
+const TOAST_LIMIT = 1 // Límite de toasts visibles a la vez.
+const TOAST_REMOVE_DELAY = 1000000 // Tiempo antes de eliminar un toast del DOM.
 
+/**
+ * @typedef {object} ToasterToast
+ * @extends ToastProps
+ * @property {string} id - ID único del toast.
+ * @property {React.ReactNode} [title] - Título del toast.
+ * @property {React.ReactNode} [description] - Descripción del toast.
+ * @property {ToastActionElement} [action] - Una acción (botón) para el toast.
+ */
 type ToasterToast = ToastProps & {
   id: string
   title?: React.ReactNode
@@ -27,6 +36,10 @@ const actionTypes = {
 
 let count = 0
 
+/**
+ * Genera un ID numérico único para cada toast.
+ * @returns {string} El ID generado.
+ */
 function genId() {
   count = (count + 1) % Number.MAX_SAFE_INTEGER
   return count.toString()
@@ -58,6 +71,10 @@ interface State {
 
 const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>()
 
+/**
+ * Añade un toast a la cola de eliminación después de un tiempo.
+ * @param {string} toastId - El ID del toast a eliminar.
+ */
 const addToRemoveQueue = (toastId: string) => {
   if (toastTimeouts.has(toastId)) {
     return
@@ -74,6 +91,12 @@ const addToRemoveQueue = (toastId: string) => {
   toastTimeouts.set(toastId, timeout)
 }
 
+/**
+ * Reducer para gestionar el estado de los toasts.
+ * @param {State} state - El estado actual.
+ * @param {Action} action - La acción a procesar.
+ * @returns {State} El nuevo estado.
+ */
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case "ADD_TOAST":
@@ -93,8 +116,6 @@ export const reducer = (state: State, action: Action): State => {
     case "DISMISS_TOAST": {
       const { toastId } = action
 
-      // ! Side effects ! - This could be extracted into a dismissToast() action,
-      // but I'll keep it here for simplicity
       if (toastId) {
         addToRemoveQueue(toastId)
       } else {
@@ -133,6 +154,10 @@ const listeners: Array<(state: State) => void> = []
 
 let memoryState: State = { toasts: [] }
 
+/**
+ * Envía una acción al reducer y notifica a los listeners.
+ * @param {Action} action - La acción a enviar.
+ */
 function dispatch(action: Action) {
   memoryState = reducer(memoryState, action)
   listeners.forEach((listener) => {
@@ -142,6 +167,11 @@ function dispatch(action: Action) {
 
 type Toast = Omit<ToasterToast, "id">
 
+/**
+ * Función para crear y mostrar un nuevo toast.
+ * @param {Toast} props - Las propiedades del toast.
+ * @returns {{id: string, dismiss: () => void, update: (props: ToasterToast) => void}}
+ */
 function toast({ ...props }: Toast) {
   const id = genId()
 
@@ -171,6 +201,9 @@ function toast({ ...props }: Toast) {
   }
 }
 
+/**
+ * Hook para acceder al estado de los toasts y a las funciones para controlarlos.
+ */
 function useToast() {
   const [state, setState] = React.useState<State>(memoryState)
 
