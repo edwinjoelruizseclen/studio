@@ -2,6 +2,8 @@
 
 Este documento detalla el proceso de construcción de Rimay App, una Progressive Web App (PWA) para aprender quechua a través de lecciones y juegos interactivos.
 
+> **Nota para estudiantes:** Si no entiendes alguna palabra técnica, ¡no te preocupes! Hemos creado un **`GLOSARIO_TECNICO.md`** en el proyecto para explicarte todo de forma sencilla.
+
 ## 1. Tecnologías Utilizadas
 
 *   **Framework**: Next.js 15 (con App Router y Turbopack)
